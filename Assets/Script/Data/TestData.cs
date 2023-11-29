@@ -2,8 +2,9 @@
 
 namespace Script.Data
 {
-    public class TestData : IData
+    public class TestData : BaseData
     {
-        
+        public int id;
+        public int name;
     }
 }

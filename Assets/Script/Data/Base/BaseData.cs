@@ -1,6 +1,6 @@
 ﻿namespace DB
 {
-    public abstract class IData
+    public abstract class BaseData
     {
         
     }

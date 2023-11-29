@@ -2,9 +2,9 @@
 {
     public interface IDB
     {
-        bool Insert(IData data);
-        bool Delete(IData data);
-        bool Update(IData data);
-        bool Query(IData data);
+        bool Insert(BaseData data);
+        bool Delete(BaseData data);
+        bool Update(BaseData data);
+        bool Query(BaseData data);
     }
 }
