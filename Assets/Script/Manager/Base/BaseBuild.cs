@@ -1,5 +1,7 @@
 ﻿
-public abstract class BaseBuild
+using UnityEngine;
+
+public abstract class BaseBuild : MonoBehaviour
 {
     // ***************** 变量 ******************
     // 范围
