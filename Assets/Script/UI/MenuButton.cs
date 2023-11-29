@@ -2,6 +2,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// 底部菜单按钮
+/// </summary>
 public class MenuButton : MonoBehaviour
 {
     

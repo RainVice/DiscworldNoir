@@ -3,6 +3,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 整个游戏的管理器主要用于数据交换
+/// </summary>
 public class GameManager : MonoBehaviour
 {
 

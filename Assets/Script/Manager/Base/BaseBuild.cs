@@ -1,6 +1,8 @@
 ﻿
 using UnityEngine;
-
+/// <summary>
+/// 所有建筑的基类
+/// </summary>
 public abstract class BaseBuild : MonoBehaviour
 {
     // ***************** 变量 ******************
@@ -29,5 +31,7 @@ public enum BuildType
     // 防御
     Defense,
     // 生产
-    Production
+    Production,
+    // 运输
+    Way
 }

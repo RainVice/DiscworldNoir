@@ -1,3 +1,31 @@
-﻿fileFormatVersion: 2
+fileFormatVersion: 2
 guid: eb2193d88e4746449f70fab8ef0be05b
-timeCreated: 1701170880
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - btnHome: {instanceID: 0}
+  - Home: {fileID: 8237620205384342735, guid: b53c0b57f17bdc0499974d056e75a44d, type: 3}
+  - BtnWall: {instanceID: 0}
+  - Wall: {instanceID: 0}
+  - btnTurret: {instanceID: 0}
+  - turret: {instanceID: 0}
+  - btnMining: {instanceID: 0}
+  - mining: {instanceID: 0}
+  - btnCion: {instanceID: 0}
+  - cion: {instanceID: 0}
+  - btnBullet: {instanceID: 0}
+  - bullet: {instanceID: 0}
+  - btnWay: {instanceID: 0}
+  - way: {instanceID: 0}
+  - btnAxe: {instanceID: 0}
+  - axe: {instanceID: 0}
+  - btnHarvester: {instanceID: 0}
+  - harvester: {instanceID: 0}
+  - btnFactory: {instanceID: 0}
+  - factory: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

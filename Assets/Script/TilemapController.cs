@@ -1,7 +1,12 @@
 using System;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 
+/// <summary>
+/// 瓦片控制器，控制大部分在瓦片上的事件
+/// </summary>
 public class TilemapController : MonoBehaviour
 {
     // ****************** 引用 ******************
@@ -17,8 +22,11 @@ public class TilemapController : MonoBehaviour
     // ****************** 变量 *****************
     // 上一步滑过的坐标
     private Vector3Int m_PreVector3Int = Vector3Int.zero;
+    // 选择的预制体
+    private GameObject m_CurSelectedObject;
     // 实例化的游戏对象
     private GameObject m_InstanceGameObject;
+    // 实例化对象的SpriteRenderer
     private SpriteRenderer m_SpriteRenderer;
 
 
@@ -38,6 +46,8 @@ public class TilemapController : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
+            // 鼠标在UI上直接返回
+            if (EventSystem.current.IsPointerOverGameObject()) return;
             // 如果没有预选中物体，则直接返回
             if (m_InstanceGameObject == null) return;
             // 如果放置的地方有物体则返回
@@ -68,13 +78,19 @@ public class TilemapController : MonoBehaviour
         // 获取坐标
         var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         var cellPos = m_Tilemap.WorldToCell(mousePos);
+        // 如果选择的预制体与GameManager的不同，弃用当前的
+        if (m_CurSelectedObject!= GameManager.Instance.CurSelectedObject)
+        {
+            m_CurSelectedObject = GameManager.Instance.CurSelectedObject;
+            Destroy(m_InstanceGameObject);
+        }
         // 如果选择了，直接实例化游戏对象
         if (m_InstanceGameObject == null)
         {
             m_InstanceGameObject = Instantiate(GameManager.Instance.CurSelectedObject, m_Grid.CellToWorld(cellPos),
                 Quaternion.identity);
             m_SpriteRenderer = m_InstanceGameObject.GetComponent<SpriteRenderer>();
-            Color color = m_SpriteRenderer.color;
+            var color = m_SpriteRenderer.color;
             color.a = 0.3f;
             m_SpriteRenderer.color = color;
         }
