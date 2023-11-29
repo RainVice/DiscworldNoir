@@ -1,3 +1,4 @@
+using Cinemachine;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
@@ -8,6 +9,8 @@ using UnityEngine.Tilemaps;
 public class TilemapController : MonoBehaviour
 {
     // ****************** 引用 ******************
+    // 移动目标
+    public Transform m_MoveTarget;
     // 绿底瓦片
     public Tile tileGreen;
     // 正常瓦片
@@ -30,6 +33,9 @@ public class TilemapController : MonoBehaviour
     private GameObject m_InstanceGameObject;
     // 实例化对象的SpriteRenderer
     private SpriteRenderer m_SpriteRenderer;
+    // 摄像机
+    private Camera m_Camera;
+    public CinemachineVirtualCamera m_Cinemachine;
 
 
     private void Awake()
@@ -40,6 +46,7 @@ public class TilemapController : MonoBehaviour
 
     private void Start()
     {
+        m_Camera = Camera.main;
         // 生成地形
         for (int i = 0; i < 500; i++)
         {
@@ -56,7 +63,24 @@ public class TilemapController : MonoBehaviour
     {
         OnMouseToTileListener();
         OnMouseDownListener();
+        OnMouseListener();
+        OnMouseScrollListener();
     }
+    
+    
+    /// <summary>
+    /// 鼠标滚轮监听
+    /// </summary>
+    private void OnMouseScrollListener()
+    {
+        var axis = Input.GetAxis("Mouse ScrollWheel");
+        if (axis != 0)
+        {
+            m_Cinemachine.m_Lens.OrthographicSize += axis * Time.deltaTime * 100f;
+            m_Cinemachine.m_Lens.OrthographicSize = Mathf.Clamp(m_Cinemachine.m_Lens.OrthographicSize, 1, 20);
+        }
+    }
+    
 
     /// <summary>
     /// 鼠标按住监听
@@ -65,20 +89,22 @@ public class TilemapController : MonoBehaviour
     {
         if (Input.GetMouseButton(0))
         {
-            
+            var mousePos = m_Camera.ScreenToWorldPoint(Input.mousePosition);
+            var offset = mousePos - m_PreMousePos;
+            m_MoveTarget.position -= offset;
+            m_PreMousePos = mousePos;
         }
     }
-    
-    
     
     /// <summary>
     /// 鼠标按下监听
     /// </summary>
     private void OnMouseDownListener()
     {
-        m_PreMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         if (Input.GetMouseButtonDown(0))
         {
+            // 获取鼠标坐标
+            m_PreMousePos = m_Camera.ScreenToWorldPoint(Input.mousePosition);
             // 鼠标在UI上直接返回
             if (EventSystem.current.IsPointerOverGameObject()) return;
             // 如果没有预选中物体，则直接返回
@@ -109,7 +135,7 @@ public class TilemapController : MonoBehaviour
         // 如果没有预选中物体，则直接返回
         if (GameManager.Instance.CurSelectedObject == null) return;
         // 获取坐标
-        var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        var mousePos = m_Camera.ScreenToWorldPoint(Input.mousePosition);
         var cellPos = m_Tilemap.WorldToCell(mousePos);
         // 如果选择的预制体与 GameManager 的不同，弃用当前的
         if (m_CurSelectedObject!= GameManager.Instance.CurSelectedObject)

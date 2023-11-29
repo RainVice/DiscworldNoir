@@ -7,19 +7,19 @@ public abstract class BaseBuild : MonoBehaviour
 {
     // ***************** 变量 ******************
     // 范围
-    private int distance;
+    protected int distance;
     // 等级
-    private int level;
+    protected int level;
     // 是否放置
-    private bool isPlace = false;
+    protected bool isPlace = false;
     // 类型
-    private BuildType buildType;
+    protected BuildType buildType;
     // 生命
-    private int hp;
+    protected int hp;
     // 升级价格
-    private int upgradePrice;
+    protected int upgradePrice;
     // 价格
-    private int price;
+    protected int price;
     
 }
 

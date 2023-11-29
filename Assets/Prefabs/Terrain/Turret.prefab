@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8379567387541478248}
   - component: {fileID: 6023709051285269656}
+  - component: {fileID: -713899613333721384}
   m_Layer: 0
   m_Name: Turret
   m_TagString: Untagged
@@ -85,6 +86,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &-713899613333721384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4852373565058945466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 760a39434e5f4fbf83a776997ffd998b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8415252971148169904
 GameObject:
   m_ObjectHideFlags: 0
