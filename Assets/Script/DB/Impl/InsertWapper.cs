@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
 namespace DB
 {
@@ -58,7 +56,15 @@ namespace DB
             {
                 var field = fieldInfos[i];
                 if (!field.IsPublic) continue;
-                var value = field.GetValue(data).ToString();
+                string value;
+                if (field.FieldType.IsEnum)
+                {
+                    value = ((int)field.GetValue(data)).ToString();
+                }
+                else
+                {
+                    value = field.GetValue(data).ToString();
+                }
                 temp += DBUtil.TypeToValue(field.FieldType, value);
                 if (i != fieldInfos.Length - 1)
                 {

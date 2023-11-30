@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using Mono.Data.Sqlite;
 using UnityEngine;
 
@@ -24,52 +23,70 @@ namespace DB
         private static DBUtil m_Instance;
 
         // 连接池
-        private Dictionary<Type, SqliteConnection> m_ConnectionPool = new();
+        // private Dictionary<Type, SqliteConnection> m_ConnectionPool = new();
 
         // 连接
         private SqliteConnection m_Connection;
 
-        // 查询
+        /// <summary>
+        /// 查询
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <param name="sql">sql语句</param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns>查询到的结果</returns>
         public List<T> Query<T>(Type type, string sql) where T : BaseData, new()
         {
             List<T> datas = new();
-            Debug.Log(sql);
+            Debug.Log($"Select: {sql}");
             IsNull(type);
             var command = m_Connection.CreateCommand();
             command.CommandText = sql;
             var reader = command.ExecuteReader();
             while (reader.Read())
             {
-                Debug.Log("获取数据");
                 var data = new T();
-                for (var i = 0; i < reader.FieldCount; i++)
+                var fieldInfos = typeof(T).GetFields();
+                for (var i = 0; i < fieldInfos.Length; i++)
                 {
-                    var name = reader.GetName(i);
-                    var value = reader.GetValue(i);
-                    if (value == DBNull.Value)
+                    var field = fieldInfos[i];
+                    if (!field.IsPublic) continue;
+                    // var value = reader.GetDataTypeName(field.Name);
+                    var value = reader[field.Name];
+                    var property = data.GetType().GetField(field.Name);
+                    if (field.FieldType == typeof(bool))
                     {
-                        value = null;
+                        value = Convert.ToBoolean(value);
                     }
-                    var property = data.GetType().GetField(name);
-                    property.SetValue(data, value);
+                    property.SetValue(data,value);
                 }
                 datas.Add(data);
             }
+
             reader.Close();
             return datas;
         }
 
 
-        // 添加
+        /// <summary>
+        /// 插入
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <param name="sql">语句</param>
+        /// <returns></returns>
         public int Insert(Type type, string sql)
         {
-            Debug.Log(sql);
+            Debug.Log($"Insert: {sql}");
             IsNull(type);
             var command = new SqliteCommand(sql, m_Connection);
             var result = command.ExecuteNonQuery();
             return result;
         }
 
+        /// <summary>
+        /// 判断是否存在表，不在则创建表
+        /// </summary>
+        /// <param name="type"></param>
         private void IsNull(Type type)
         {
             if (m_Connection == null)
@@ -83,7 +100,7 @@ namespace DB
             var command = m_Connection.CreateCommand();
             command.CommandText = $"SELECT name FROM sqlite_master WHERE type='table' AND name='{type.Name}';";
             var result = command.ExecuteScalar();
-            
+
             // 没有就创建表
             if (result == null || result.ToString() != type.Name)
             {
@@ -97,12 +114,13 @@ namespace DB
 
                     var typeToString = GetTypeToString(field.FieldType);
                     sql += $"{field.Name} {typeToString}";
-                    
+
                     if (i != fieldInfos.Length - 1)
                     {
                         sql += ",";
                     }
                 }
+
                 sql += ")";
                 Debug.Log(sql);
                 command.CommandText = sql;
@@ -117,20 +135,21 @@ namespace DB
         /// <returns>sql值类型</returns>
         public static string GetTypeToString(Type fieldType)
         {
-
-            if (fieldType.Name == "String")
-            {
-                return "varchar(255)";
-            }
-
-            if (fieldType.Name == "Int32" || fieldType.IsEnum)
+            var fieldTypeName = fieldType.Name;
+            if (fieldTypeName == "Int32" || fieldType.IsEnum)
             {
                 return "int";
             }
 
-            return fieldType.Name;
+            return fieldTypeName switch
+            {
+                "String" => "varchar(255)",
+                "Single" => "float",
+                "Boolean" => "boolean",
+                _ => fieldTypeName
+            };
         }
-        
+
         /// <summary>
         /// 判断数据值转Sql类型值
         /// </summary>
@@ -139,12 +158,13 @@ namespace DB
         /// <returns></returns>
         public static string TypeToValue(Type type, string value)
         {
+            
+            // INSERT INTO Home VALUES (10,100,1,False,Attack,100,100)
             return GetTypeToString(type) switch
             {
                 "varchar(255)" => $"'{value}'",
                 _ => value
             };
         }
-        
     }
 }

@@ -1,6 +1,5 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using DB;
-using Script.Data;
 using UnityEngine;
 
 /// <summary>
@@ -8,5 +7,11 @@ using UnityEngine;
 /// </summary>
 public class HomeBuild : BaseBuild
 {
+    private void Start()
+    {
 
+        var queryWapper = new QueryWapper<Home>();
+        var homes = queryWapper.Do();
+        Debug.Log(homes[0]);
+    }
 }

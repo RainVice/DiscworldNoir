@@ -27,11 +27,12 @@ public abstract class BaseBuild : MonoBehaviour
 public enum BuildType
 {
     // 攻击
-    Attack,
+    Attack = 0,
     // 防御
-    Defense,
+    Defense = 1,
     // 生产
-    Production,
+    Production = 2,
     // 运输
-    Way
+    Way = 3
+    
 }

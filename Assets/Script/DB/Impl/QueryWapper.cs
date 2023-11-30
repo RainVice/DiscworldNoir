@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using Mono.Data.Sqlite;
-using Script.Data;
-using UnityEngine;
 
 namespace DB
 {
@@ -108,7 +103,7 @@ namespace DB
             if (m_Conditions.Count > 0)
             {
                 sql += " WHERE ";
-                for (int i = 0; i < m_Conditions.Count; i++)
+                for (var i = 0; i < m_Conditions.Count; i++)
                 {
                     sql += m_Conditions[i].Item1 + " " + m_Conditions[i].Item2 + " " + DBUtil.TypeToValue(m_Conditions[i].Item3.GetType(), m_Conditions[i].Item3.ToString());
                     if (i < m_Conditions.Count - 1)
