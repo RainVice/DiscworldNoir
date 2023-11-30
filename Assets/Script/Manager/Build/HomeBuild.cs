@@ -1,5 +1,6 @@
 ﻿using System;
-using Unity.VisualScripting.Dependencies.Sqlite;
+using DB;
+using Script.Data;
 using UnityEngine;
 
 /// <summary>
@@ -7,8 +8,5 @@ using UnityEngine;
 /// </summary>
 public class HomeBuild : BaseBuild
 {
-    private void Start()
-    {
 
-    }
 }

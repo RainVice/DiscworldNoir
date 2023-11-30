@@ -5,6 +5,6 @@ namespace Script.Data
     public class TestData : BaseData
     {
         public int id;
-        public int name;
+        public string name;
     }
 }
