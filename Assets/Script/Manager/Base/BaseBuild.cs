@@ -1,5 +1,8 @@
 ﻿
+using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
+
 /// <summary>
 /// 所有建筑的基类
 /// </summary>
@@ -21,18 +24,24 @@ public abstract class BaseBuild : MonoBehaviour
     // 价格
     protected int price;
     
+    // 是否可以放置
+    public virtual bool CanPlace()
+    {
+        return true;
+    }
 }
 
 
+[Flags]
 public enum BuildType
 {
     // 攻击
-    Attack = 0,
+    Attack = 1,
     // 防御
-    Defense = 1,
+    Defense = 2,
     // 生产
-    Production = 2,
+    Production = 4,
     // 运输
-    Way = 3
+    Way = 8
     
 }

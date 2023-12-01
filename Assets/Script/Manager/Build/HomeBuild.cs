@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using DB;
 using UnityEngine;
 
@@ -7,11 +7,28 @@ using UnityEngine;
 /// </summary>
 public class HomeBuild : BaseBuild
 {
-    private void Start()
+    // 攻击力
+    private int attack;
+    private void Awake()
     {
+        var buildData = GameManager.Instance.GetBuildData(nameof(HomeBuild));
+        if (buildData!= null)
+        {
+            distance = buildData.distance;
+            level = buildData.level;
+            isPlace = buildData.isPlace;
+            buildType = buildData.buildType;
+            hp = buildData.hp;
+            upgradePrice = buildData.upgradePrice;
+            price = buildData.price;
+            attack = buildData.attack;
+        }
+    }
 
-        var queryWapper = new QueryWapper<Home>();
-        var homes = queryWapper.Do();
-        Debug.Log(homes[0]);
+
+    public override bool CanPlace()
+    {
+        var homeBuilds = GameManager.Instance.GetBuilds(typeof(HomeBuild));
+        return homeBuilds.Count < 1;
     }
 }

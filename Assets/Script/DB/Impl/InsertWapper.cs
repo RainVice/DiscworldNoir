@@ -15,8 +15,8 @@ namespace DB
         {
             return Do(new List<T>(ts));
         }
-        
-        public bool Do(List<T> ts)
+
+        private bool Do(IReadOnlyList<T> ts)
         {
             if (ts == null) return false;
             // 生成sql语句
@@ -28,7 +28,7 @@ namespace DB
                 if (i != ts.Count - 1) sql += ",";
             }
             var result = DBUtil.Instance.Insert(typeof(T), sql);
-            return result == 0;
+            return result != 0;
         }
 
         public bool Do(T t)
@@ -44,7 +44,7 @@ namespace DB
             var sql = $"INSERT INTO {typeof(T).Name} VALUES ";
             sql += GenerateSqlValue(t);
             var result = DBUtil.Instance.Insert(typeof(T), sql);
-            return result == 1;
+            return result != 0;
         }
 
         private string GenerateSqlValue(T data)

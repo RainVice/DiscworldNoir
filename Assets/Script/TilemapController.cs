@@ -48,7 +48,7 @@ public class TilemapController : MonoBehaviour
     {
         m_Camera = Camera.main;
         // 生成地形
-        for (int i = 0; i < 500; i++)
+        for (var i = 0; i < 500; i++)
         {
             var randomPoint = GenerateRandomPoint();
             var instantiate = Instantiate(
@@ -119,11 +119,7 @@ public class TilemapController : MonoBehaviour
             color.a = 200f / 255f;
             m_SpriteRenderer.color = color;
             // 置空
-            m_InstanceGameObject = null;
-            if (!Input.GetKey(KeyCode.LeftControl))
-            {
-                GameManager.Instance.CurSelectedObject = null;
-            }
+            Delete(!Input.GetKey(KeyCode.LeftControl));
         }
     }
     
@@ -148,6 +144,12 @@ public class TilemapController : MonoBehaviour
         {
             m_InstanceGameObject = Instantiate(GameManager.Instance.CurSelectedObject, m_Grid.CellToWorld(cellPos),
                 Quaternion.identity);
+            // 判断是否可以放置，如果不可以就直接销毁返回
+            if (!m_InstanceGameObject.GetComponent<BaseBuild>().CanPlace())
+            {
+                Delete();
+                return;
+            }
             m_SpriteRenderer = m_InstanceGameObject.GetComponent<SpriteRenderer>();
             var color = m_SpriteRenderer.color;
             color.a = 0.3f;
@@ -195,5 +197,19 @@ public class TilemapController : MonoBehaviour
             randomPoint = new Vector3Int( Random.Range(-70,70), Random.Range(-70,70), 0);
         } while (GameManager.Instance.HasTerrain(randomPoint));
         return randomPoint;
+    }
+    
+    
+    /// <summary>
+    /// 删除
+    /// </summary>
+    /// <param name="isDelete">是否删除预选</param>
+    private void Delete(bool isDelete = true)
+    {
+        m_InstanceGameObject = null;
+        if (isDelete)
+        {
+            GameManager.Instance.CurSelectedObject = null;
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// <summary>
@@ -43,13 +44,22 @@ public class MenuButton : MonoBehaviour
     public void Start()
     {
         OnClickListener();
+        AddEnterListener();
     }
 
 
 
     private void OnClickListener()
     {
-        btnHome.onClick.AddListener(() => GameManager.Instance.CurSelectedObject = Home );
+        btnHome.onClick.AddListener(() => {
+            var homeBuilds = GameManager.Instance.GetBuilds(typeof(HomeBuild));
+            if (homeBuilds.Count == 1)
+            {
+                UIManager.Instance.CreateToast();
+                return;
+            }
+            GameManager.Instance.CurSelectedObject = Home;
+        });
         BtnWall.onClick.AddListener(() => GameManager.Instance.CurSelectedObject = Wall);
         btnTurret.onClick.AddListener(() => GameManager.Instance.CurSelectedObject = turret);
         btnMining.onClick.AddListener(() => GameManager.Instance.CurSelectedObject = mining);
@@ -61,4 +71,54 @@ public class MenuButton : MonoBehaviour
         btnFactory.onClick.AddListener(() => GameManager.Instance.CurSelectedObject = factory);
     }
 
+    private void AddEnterListener()
+    {
+        var entryEvent = new EventTrigger.TriggerEvent();
+        entryEvent.AddListener(OnPointerEnter);
+        var entry = new EventTrigger.Entry() { eventID = EventTriggerType.PointerEnter, callback = entryEvent };
+        var exitEvent = new EventTrigger.TriggerEvent();
+        exitEvent.AddListener(OnPointerExit);
+        var exit = new EventTrigger.Entry() { eventID = EventTriggerType.PointerExit, callback = exitEvent };
+        
+        
+        btnHome.GetComponent<EventTrigger>().triggers.Add(entry);
+        BtnWall.GetComponent<EventTrigger>().triggers.Add(entry);
+        btnTurret.GetComponent<EventTrigger>().triggers.Add(entry);
+        btnMining.GetComponent<EventTrigger>().triggers.Add(entry);
+        btnCion.GetComponent<EventTrigger>().triggers.Add(entry);
+        btnBullet.GetComponent<EventTrigger>().triggers.Add(entry);
+        btnWay.GetComponent<EventTrigger>().triggers.Add(entry);
+        btnAxe.GetComponent<EventTrigger>().triggers.Add(entry);
+        btnHarvester.GetComponent<EventTrigger>().triggers.Add(entry);
+        btnFactory.GetComponent<EventTrigger>().triggers.Add(entry);
+        
+        btnHome.GetComponent<EventTrigger>().triggers.Add(exit);
+        BtnWall.GetComponent<EventTrigger>().triggers.Add(exit);
+        btnTurret.GetComponent<EventTrigger>().triggers.Add(exit);
+        btnMining.GetComponent<EventTrigger>().triggers.Add(exit);
+        btnCion.GetComponent<EventTrigger>().triggers.Add(exit);
+        btnBullet.GetComponent<EventTrigger>().triggers.Add(exit);
+        btnWay.GetComponent<EventTrigger>().triggers.Add(exit);
+        btnAxe.GetComponent<EventTrigger>().triggers.Add(exit);
+        btnHarvester.GetComponent<EventTrigger>().triggers.Add(exit);
+        btnFactory.GetComponent<EventTrigger>().triggers.Add(exit);
+        
+    }
+
+
+    private static void OnPointerEnter(BaseEventData eventData)
+    {
+        if (eventData is not PointerEventData pointerEventData) return;
+        var go = pointerEventData.pointerCurrentRaycast.gameObject;
+        var data = GameManager.Instance.GetBuildDataByFuzzy(go.name);
+        if (data!= null)
+        {
+            UIManager.Instance.ShowTip(data.ToString());
+        }
+    }
+
+    private static void OnPointerExit(BaseEventData eventData)
+    {
+        UIManager.Instance.CloseTip();
+    }
 }

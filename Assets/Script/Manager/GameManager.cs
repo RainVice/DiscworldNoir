@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using DB;
 using UnityEngine;
 
 /// <summary>
@@ -7,22 +9,13 @@ using UnityEngine;
 /// </summary>
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance => m_Instance;
 
     // ************** 属性 *****************
-    public GameObject CurSelectedObject
-    {
-        get => m_CurSelectedObject;
-        // 实例化预制体
-        set => m_CurSelectedObject = value;
-    }
-    // *************** 变量 *****************
     // 单例
-    private static GameManager m_Instance;
-
+    public static GameManager Instance { get; private set; }
     // 当前选择的一个物体
-    private GameObject m_CurSelectedObject;
-
+    public GameObject CurSelectedObject { get; set; }
+    // *************** 变量 *****************
     // 建筑集合分类
     private Dictionary<Type, List<BaseBuild>> m_Builds;
 
@@ -31,13 +24,65 @@ public class GameManager : MonoBehaviour
 
     // 地形集合
     private Dictionary<Vector3Int, BaseTerrain> m_TerrainList;
+    
+    // 建筑数据
+    private Dictionary<string, BuildData> m_BuildData;
 
     private void Awake()
     {
-        m_Instance = this;
+        Instance = this;
+        // 获取建筑数据
+        InitBuilds();
+    }
+
+    /// <summary>
+    /// 获取建筑数据
+    /// </summary>
+    private void InitBuilds()
+    {
+        m_BuildData = new Dictionary<string, BuildData>();
+        var buildDatas = new QueryWapper<BuildData>().Do();
+        buildDatas.ForEach(buildData =>
+        {
+            m_BuildData.Add(buildData.buildName, buildData);
+        });
     }
     
-    // 是否存在地形
+    /// <summary>
+    /// 获取建筑数据
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public BuildData GetBuildData(string name)
+    {
+        return m_BuildData[name];
+    }
+    
+    /// <summary>
+    /// 模糊查询建筑数据
+    /// </summary>
+    /// <param name="name">查询的名称</param>
+    /// <returns></returns>
+    public BuildData GetBuildDataByFuzzy(string name)
+    {
+        var keyValuePairs = from key in m_BuildData.Keys
+            where name.Contains(name) select key;
+        foreach (var keyValuePair in keyValuePairs)
+        {
+            if (m_BuildData.TryGetValue(keyValuePair, out var fuzzy))
+            {
+                return fuzzy;
+            }
+        }
+
+        return null;
+    }
+    
+    /// <summary>
+    /// 是否存在地形
+    /// </summary>
+    /// <param name="cellPos">地形坐标</param>
+    /// <returns></returns>
     public bool HasTerrain(Vector3Int cellPos)
     {
         if (m_TerrainList == null)
@@ -60,6 +105,18 @@ public class GameManager : MonoBehaviour
         }
         var baseTerrain = terrain.GetComponent<BaseTerrain>();
         m_TerrainList.Add(cellPos, baseTerrain);
+    }
+    
+    /// <summary>
+    /// 获取地形
+    /// </summary>
+    /// <param name="cellPos">地形位置</param>
+    /// <typeparam name="T">地形类型</typeparam>
+    /// <returns>返回地形</returns>
+    public T GetTerrain<T>(Vector3Int cellPos) where T : BaseTerrain
+    {
+        m_TerrainList ??= new Dictionary<Vector3Int, BaseTerrain>();
+        return m_TerrainList[cellPos] as T;
     }
 
     /// <summary>
@@ -93,7 +150,6 @@ public class GameManager : MonoBehaviour
         return m_BuildList.TryGetValue(cellPos, out var build) ? build : null;
     }
 
-
     /// <summary>
     /// 添加游戏对象进入字典中保存，方便下次批量调用
     /// </summary>
@@ -105,13 +161,30 @@ public class GameManager : MonoBehaviour
             m_Builds = new Dictionary<Type, List<BaseBuild>>();
         }
 
-        BaseBuild baseBuild = build.GetComponent<BaseBuild>();
+        var baseBuild = build.GetComponent<BaseBuild>();
         if (!m_Builds.ContainsKey(baseBuild.GetType()))
         {
             m_Builds.Add(baseBuild.GetType(), new List<BaseBuild>());
         }
 
         m_Builds[baseBuild.GetType()].Add(baseBuild);
+    }
+    
+    /// <summary>
+    /// 获取指定类型的所有建筑
+    /// </summary>
+    /// <typeparam name="T"> 建筑类型</typeparam>
+    /// <returns> 建筑集合</returns>
+    public List<BaseBuild> GetBuilds(Type type)
+    {
+        m_Builds??= new Dictionary<Type, List<BaseBuild>>();
+        if (!m_Builds.ContainsKey(type))
+        {
+            return new List<BaseBuild>();
+        }
+        var baseBuilds = m_Builds[type];
+        var builds = baseBuilds;
+        return builds;
     }
 
     /// <summary>

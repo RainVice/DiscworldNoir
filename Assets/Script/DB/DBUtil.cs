@@ -51,8 +51,15 @@ namespace DB
                 {
                     var field = fieldInfos[i];
                     if (!field.IsPublic) continue;
-                    // var value = reader.GetDataTypeName(field.Name);
-                    var value = reader[field.Name];
+                    object value;
+                    try
+                    {
+                        value = reader[field.Name];
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+                    }
                     var property = data.GetType().GetField(field.Name);
                     if (field.FieldType == typeof(bool))
                     {
@@ -91,7 +98,7 @@ namespace DB
         {
             if (m_Connection == null)
             {
-                var path = Application.persistentDataPath + "/DiscworldNoir.db";
+                var path = Application.dataPath + "/DB/DiscworldNoir.db";
                 m_Connection = new SqliteConnection("Data Source=" + path);
                 m_Connection.Open();
             }
@@ -122,7 +129,7 @@ namespace DB
                 }
 
                 sql += ")";
-                Debug.Log(sql);
+                Debug.Log($"Create Table: {sql}");
                 command.CommandText = sql;
                 command.ExecuteNonQuery();
             }
@@ -158,8 +165,6 @@ namespace DB
         /// <returns></returns>
         public static string TypeToValue(Type type, string value)
         {
-            
-            // INSERT INTO Home VALUES (10,100,1,False,Attack,100,100)
             return GetTypeToString(type) switch
             {
                 "varchar(255)" => $"'{value}'",
