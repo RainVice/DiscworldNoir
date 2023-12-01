@@ -1,13 +1,19 @@
 ﻿
 using System;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 /// <summary>
 /// 所有建筑的基类
 /// </summary>
-public abstract class BaseBuild : MonoBehaviour
+public abstract class BaseBuild : BaseObstacle
 {
+    // 属性
+    public Vector3Int CurPos
+    {
+        get => m_curPos;
+        set => m_curPos = value;
+    }
+    
     // ***************** 变量 ******************
     // 范围
     protected int distance;
@@ -26,11 +32,14 @@ public abstract class BaseBuild : MonoBehaviour
     // 数据
     protected BuildData m_buildData;
     // 当前位置
-    public Vector3Int m_curPos;
+    private Vector3Int m_curPos;
+    
+    public ObstacleType ObstacleType => m_obstacleType;
 
 
     protected virtual void Awake()
     {
+        m_obstacleType = ObstacleType.Build;
         m_buildData = GameManager.Instance.GetBuildData(GetType().Name);
         if (m_buildData == null) return;
         distance = m_buildData.distance;

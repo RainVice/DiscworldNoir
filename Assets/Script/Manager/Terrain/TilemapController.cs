@@ -187,13 +187,13 @@ public class TilemapController : MonoBehaviour
     /// 鼠标滑出瓦片的事件
     /// </summary>
     /// <param name="cellPos">瓦片的坐标</param>
-    private void OnMouseExitTile(Vector3Int cellPos) { }
+    private static void OnMouseExitTile(Vector3Int cellPos) { }
     
     /// <summary>
     /// 生成随机坐标
     /// </summary>
     /// <returns></returns>
-    private Vector3Int GenerateRandomPoint()
+    private static Vector3Int GenerateRandomPoint()
     {
         Vector3Int randomPoint;
         do
@@ -216,4 +216,15 @@ public class TilemapController : MonoBehaviour
             GameManager.Instance.CurSelectedObject = null;
         }
     }
+    
+    /// <summary>
+    /// LayerPosition 转 Vector3Int
+    /// </summary>
+    /// <param name="lp"></param>
+    /// <returns></returns>
+    public Vector3Int LpToVector3Int(LayerPosition lp)
+    {
+        return m_Grid.WorldToCell(lp.GetVector3());
+    }
+    
 }

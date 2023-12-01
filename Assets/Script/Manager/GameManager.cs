@@ -15,6 +15,10 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
     // 当前选择的一个物体
     public GameObject CurSelectedObject { get; set; }
+    
+    // *************** 引用 *****************
+    public Grid m_Grid;
+    
     // *************** 变量 *****************
     // 建筑集合分类
     private Dictionary<Type, List<BaseBuild>> m_Builds;
@@ -122,7 +126,7 @@ public class GameManager : MonoBehaviour
             m_BuildList = new Dictionary<Vector3Int, BaseBuild>();
         }
         var baseBuild = build.GetComponent<BaseBuild>();
-        baseBuild.m_curPos = cellPos;
+        baseBuild.CurPos = cellPos;
         m_BuildList.Add(cellPos, baseBuild);
     }
 
@@ -194,4 +198,25 @@ public class GameManager : MonoBehaviour
             m_Builds[baseBuild.GetType()].Remove(baseBuild);
         }
     }
+    
+    public BaseObstacle GetObstacle(Vector3 vector3)
+    {
+        var baseBuild = GetBuild(m_Grid.LocalToCell(vector3));
+        if (baseBuild != null) return baseBuild;
+        var baseTerrain = GetTerrain<BaseTerrain>(m_Grid.LocalToCell(vector3));
+        return baseTerrain != null ? baseTerrain : null;
+    }
+
+
+    public void Scan(LayerPosition layerPosition)
+    {
+        layerPosition.Scan(transform.position, v3 =>
+        {
+            var baseObstacle = GameManager.Instance.GetObstacle(v3);
+            // todo 扫描地形
+        });
+    }
+    
+    
+    
 }
