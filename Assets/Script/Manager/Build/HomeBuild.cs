@@ -1,31 +1,16 @@
-﻿using System;
-using DB;
-using UnityEngine;
-
-/// <summary>
+﻿/// <summary>
 /// 大本营控制类
 /// </summary>
 public class HomeBuild : BaseBuild
 {
     // 攻击力
     private int attack;
-    private void Awake()
+    protected override void Awake()
     {
-        var buildData = GameManager.Instance.GetBuildData(nameof(HomeBuild));
-        if (buildData!= null)
-        {
-            distance = buildData.distance;
-            level = buildData.level;
-            isPlace = buildData.isPlace;
-            buildType = buildData.buildType;
-            hp = buildData.hp;
-            upgradePrice = buildData.upgradePrice;
-            price = buildData.price;
-            attack = buildData.attack;
-        }
+        base.Awake();
+        attack = m_buildData.attack;
     }
-
-
+    
     public override bool CanPlace()
     {
         var homeBuilds = GameManager.Instance.GetBuilds(typeof(HomeBuild));

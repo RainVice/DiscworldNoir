@@ -65,17 +65,7 @@ public class GameManager : MonoBehaviour
     /// <returns></returns>
     public BuildData GetBuildDataByFuzzy(string name)
     {
-        var keyValuePairs = from key in m_BuildData.Keys
-            where name.Contains(name) select key;
-        foreach (var keyValuePair in keyValuePairs)
-        {
-            if (m_BuildData.TryGetValue(keyValuePair, out var fuzzy))
-            {
-                return fuzzy;
-            }
-        }
-
-        return null;
+        return (from key in m_BuildData.Keys where key.Contains(name) select m_BuildData[key]).FirstOrDefault();
     }
     
     /// <summary>
@@ -99,10 +89,7 @@ public class GameManager : MonoBehaviour
     /// <param name="terrain"> 地形 </param>
     public void AddTerrain(Vector3Int cellPos, GameObject terrain)
     {
-        if (m_TerrainList == null)
-        {
-            m_TerrainList = new Dictionary<Vector3Int, BaseTerrain>();
-        }
+        m_TerrainList ??= new Dictionary<Vector3Int, BaseTerrain>();
         var baseTerrain = terrain.GetComponent<BaseTerrain>();
         m_TerrainList.Add(cellPos, baseTerrain);
     }
@@ -116,7 +103,11 @@ public class GameManager : MonoBehaviour
     public T GetTerrain<T>(Vector3Int cellPos) where T : BaseTerrain
     {
         m_TerrainList ??= new Dictionary<Vector3Int, BaseTerrain>();
-        return m_TerrainList[cellPos] as T;
+        if (m_TerrainList.TryGetValue(cellPos, out var value))
+        {
+            return value as T;
+        }
+        return null;
     }
 
     /// <summary>
@@ -130,8 +121,8 @@ public class GameManager : MonoBehaviour
         {
             m_BuildList = new Dictionary<Vector3Int, BaseBuild>();
         }
-
-        BaseBuild baseBuild = build.GetComponent<BaseBuild>();
+        var baseBuild = build.GetComponent<BaseBuild>();
+        baseBuild.m_curPos = cellPos;
         m_BuildList.Add(cellPos, baseBuild);
     }
 
@@ -166,7 +157,6 @@ public class GameManager : MonoBehaviour
         {
             m_Builds.Add(baseBuild.GetType(), new List<BaseBuild>());
         }
-
         m_Builds[baseBuild.GetType()].Add(baseBuild);
     }
     

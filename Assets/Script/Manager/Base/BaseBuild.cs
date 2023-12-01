@@ -23,7 +23,25 @@ public abstract class BaseBuild : MonoBehaviour
     protected int upgradePrice;
     // 价格
     protected int price;
-    
+    // 数据
+    protected BuildData m_buildData;
+    // 当前位置
+    public Vector3Int m_curPos;
+
+
+    protected virtual void Awake()
+    {
+        m_buildData = GameManager.Instance.GetBuildData(GetType().Name);
+        if (m_buildData == null) return;
+        distance = m_buildData.distance;
+        level = m_buildData.level;
+        isPlace = m_buildData.isPlace;
+        buildType = m_buildData.buildType;
+        hp = m_buildData.hp;
+        upgradePrice = m_buildData.upgradePrice;
+        price = m_buildData.price;
+    }
+
     // 是否可以放置
     public virtual bool CanPlace()
     {
