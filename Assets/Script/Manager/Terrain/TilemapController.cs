@@ -107,15 +107,23 @@ public class TilemapController : MonoBehaviour
             // 鼠标在UI上直接返回
             if (EventSystem.current.IsPointerOverGameObject()) return;
             // 如果没有预选中物体，则直接返回
-            if (m_InstanceGameObject == null) return;
+            if (!m_InstanceGameObject) return;
             // 如果放置的地方有物体则返回
-            if (GameManager.Instance.GetBuild(m_PreVector3Int) != null) return;
+            if (GameManager.Instance.GetBuild(m_PreVector3Int)) return;
+            // 判断是否可以放置，如果不可以就直接销毁返回
+            if (!m_InstanceGameObject.GetComponent<BaseBuild>().CanPlace())
+            {
+                Destroy(m_InstanceGameObject);
+                Delete();
+                return;
+            }
             // 如果选中物体则放置
             GameManager.Instance.AddBuild(m_InstanceGameObject);
             GameManager.Instance.AddBuild(m_PreVector3Int, m_InstanceGameObject);
             // 修改透明度
+            if (!m_SpriteRenderer) m_SpriteRenderer = m_InstanceGameObject.GetComponent<SpriteRenderer>();
             var color = m_SpriteRenderer.color;
-            color.a = 200f / 255f;
+            color.a = 1f;
             m_SpriteRenderer.color = color;
             // 置空
             Delete(!Input.GetKey(KeyCode.LeftControl));
@@ -133,7 +141,7 @@ public class TilemapController : MonoBehaviour
     private void OnMouseToTileListener()
     {
         // 如果没有预选中物体，则直接返回
-        if (GameManager.Instance.CurSelectedObject == null) return;
+        if (!GameManager.Instance.CurSelectedObject) return;
         // 获取坐标
         var mousePos = m_Camera.ScreenToWorldPoint(Input.mousePosition);
         var cellPos = m_Tilemap.WorldToCell(mousePos);
@@ -144,20 +152,10 @@ public class TilemapController : MonoBehaviour
             Destroy(m_InstanceGameObject);
         }
         // 如果选择了，直接实例化游戏对象
-        if (m_InstanceGameObject == null)
+        if (!m_InstanceGameObject)
         {
             m_InstanceGameObject = Instantiate(GameManager.Instance.CurSelectedObject, m_Grid.CellToWorld(cellPos),
                 Quaternion.identity);
-            // 判断是否可以放置，如果不可以就直接销毁返回
-            if (!m_InstanceGameObject.GetComponent<BaseBuild>().CanPlace())
-            {
-                Delete();
-                return;
-            }
-            m_SpriteRenderer = m_InstanceGameObject.GetComponent<SpriteRenderer>();
-            var color = m_SpriteRenderer.color;
-            color.a = 0.3f;
-            m_SpriteRenderer.color = color;
         }
         // 如果坐标改变，则触发事件
         if (m_PreVector3Int != cellPos && m_Tilemap.HasTile(cellPos))
@@ -210,6 +208,7 @@ public class TilemapController : MonoBehaviour
     /// <param name="isDelete">是否删除预选</param>
     private void Delete(bool isDelete = true)
     {
+        m_SpriteRenderer = null;
         m_InstanceGameObject = null;
         if (isDelete)
         {

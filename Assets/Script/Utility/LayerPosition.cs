@@ -32,6 +32,25 @@ public struct LayerPosition
     {
         return new LayerPosition(a.layer / b, a.position / b);
     }
+    
+    public static Vector3 operator +(Vector3 a, LayerPosition b)
+    {
+        return a + b.GetVector3();
+    }
+    public static Vector3 operator -(Vector3 a, LayerPosition b)
+    {
+        return a - b.GetVector3();
+    }
+    public static Vector3 operator +(LayerPosition a, Vector3 b )
+    {
+        return a.GetVector3() + b;
+    }
+    public static Vector3 operator -(LayerPosition a, Vector3 b)
+    {
+        return a.GetVector3() - b;
+    }
+    
+    
     /// <summary>
     /// 角度
     /// </summary>
@@ -39,7 +58,7 @@ public struct LayerPosition
     /// <summary>
     /// 距离
     /// </summary>
-    public float Distance => layer * 1.05f - 1.05f / 2f;
+    public float Distance => layer * 1.05f;
     /// <summary>
     /// 此层个数
     /// </summary>
@@ -52,8 +71,8 @@ public struct LayerPosition
     public Vector3 GetVector3()
     {
         return new Vector3(
-            Distance + 1.05f / 2f * Mathf.Cos(Angle * Mathf.Deg2Rad),
-            Distance + 1.05f / 2f * Mathf.Sin(Angle * Mathf.Deg2Rad),
+            Distance * Mathf.Cos(Angle * Mathf.Deg2Rad),
+            Distance * Mathf.Sin(Angle * Mathf.Deg2Rad),
             0
         );
     }
@@ -65,12 +84,12 @@ public struct LayerPosition
     /// <param name="action">坐标处理回调</param>
     public void Scan(Vector3 curVector3, Action<Vector3> action)
     {
-        for (var i = 0; i < layer; i++)
+        for (var i = 1; i <= layer; i++)
         {
-            for (var j = 0; j < 6; j++)
+            for (var j = 1; j <= 6 * i; j++)
             {
-                var vector3 = curVector3 + new LayerPosition(i, j).GetVector3();
-                action(vector3);
+                var vector3 = curVector3 + new LayerPosition(i, j);
+                action.Invoke(vector3);
             }
         }
     }

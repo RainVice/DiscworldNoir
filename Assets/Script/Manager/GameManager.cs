@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DB;
+using UnityEditor.Scripting;
 using UnityEngine;
 
 /// <summary>
@@ -18,6 +19,7 @@ public class GameManager : MonoBehaviour
     
     // *************** 引用 *****************
     public Grid m_Grid;
+    public GameObject LinePrefab;
     
     // *************** 变量 *****************
     // 建筑集合分类
@@ -127,6 +129,7 @@ public class GameManager : MonoBehaviour
         }
         var baseBuild = build.GetComponent<BaseBuild>();
         baseBuild.CurPos = cellPos;
+        baseBuild.IsPlace = true;
         m_BuildList.Add(cellPos, baseBuild);
     }
 
@@ -208,12 +211,15 @@ public class GameManager : MonoBehaviour
     }
 
 
-    public void Scan(LayerPosition layerPosition)
+    public void Scan(LayerPosition layerPosition,Vector3 curVector3,Action<BaseObstacle> action)
     {
-        layerPosition.Scan(transform.position, v3 =>
+        layerPosition.Scan(curVector3, v3 =>
         {
-            var baseObstacle = GameManager.Instance.GetObstacle(v3);
-            // todo 扫描地形
+            var baseObstacle = GetObstacle(v3);
+            if (baseObstacle != null)
+            {
+                action.Invoke(baseObstacle);
+            }
         });
     }
     
