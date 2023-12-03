@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Effect;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -16,6 +19,8 @@ public class Line : MonoBehaviour
     private LayerPosition EndLayerPosition { get; set; }
     private float Magnitude { get; set; }
     private float Angle { get; set; }
+    
+    private List<GameObject> m_circleList = new();
 
     private void Awake()
     {
@@ -24,7 +29,12 @@ public class Line : MonoBehaviour
     }
 
 
-    public void Push(bool direction)
+    /// <summary>
+    /// 推送资源
+    /// </summary>
+    /// <param name="direction">true: 向外推送, false: 向内推送</param>
+    /// <param name="onFinish">推送完成回调</param>
+    public void Push(bool direction, Action onFinish = null)
     {
         var start = StartPos;
         var end = EndPos;
@@ -35,7 +45,13 @@ public class Line : MonoBehaviour
         }
 
         var instantiate = Instantiate(circle,start,Quaternion.identity);
-        this.CreateEffect().AddEffect(instantiate.transform.SlideTFTo(start,end)).Play(() => Destroy(instantiate));
+        m_circleList.Add(instantiate);
+        this.CreateEffect().AddEffect(instantiate.transform.SlideTFTo(start,end)).Play(() =>
+        {
+            onFinish?.Invoke();
+            m_circleList.Remove(instantiate);
+            Destroy(instantiate);
+        });
     }
     
     
@@ -67,8 +83,12 @@ public class Line : MonoBehaviour
         component.Angle = angle;
         return component;
     }
-    
-    
-    
-    
+
+    private void OnDestroy()
+    {
+        foreach (var o in m_circleList.Where(o => !o.IsDestroyed()))
+        {
+            Destroy(o);
+        }
+    }
 }

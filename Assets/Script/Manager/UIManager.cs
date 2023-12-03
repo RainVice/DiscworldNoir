@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
@@ -29,7 +28,6 @@ public class UIManager : MonoBehaviour
         }
         
     }
-    
     
     public void ShowTip(string msg)
     {

@@ -11,13 +11,15 @@ using UnityEngine;
 public abstract class BaseBuild : BaseObstacle
 {
     // **************** 属性 *****************
+    // 障碍类型
     public ObstacleType ObstacleType => m_obstacleType;
+    // 当前座标
     public Vector3Int CurPos
     {
         get => m_curPos;
         set => m_curPos = value;
     }
-
+    // 是否放置
     public bool IsPlace
     {
         get => isPlace;
@@ -58,8 +60,8 @@ public abstract class BaseBuild : BaseObstacle
     // 保存线段的集合
     protected List<Line> m_lines = new();
     
+    // 线条集合
     protected Dictionary<BaseObstacle,Line> m_lineDic = new();
-
 
     protected virtual void Awake()
     {
@@ -154,7 +156,7 @@ public abstract class BaseBuild : BaseObstacle
     {
         foreach (var line in m_lineDic)
         {
-            if (!line.Value.gameObject.IsDestroyed())
+            if (!line.Value.IsDestroyed())
             {
                 Destroy(line.Value.gameObject);
             }
