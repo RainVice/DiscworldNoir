@@ -94,5 +94,20 @@ public struct LayerPosition
         }
     }
     
+    /// <summary>
+    /// Vector3 转 LayerPosition
+    /// </summary>
+    /// <param name="vector3"></param>
+    /// <returns></returns>
+    public static LayerPosition Vector3ToLayerPosition(Vector3 vector3)
+    {
+        var layer = Mathf.RoundToInt(vector3.magnitude / 1.05f);
+        // 计算vertor3角度
+        var angle = Mathf.Atan2(vector3.y, vector3.x) * Mathf.Rad2Deg;
+        if (angle < 0) angle += 360;
+        var position = Mathf.RoundToInt(angle / (360f / layer / 6f));
+        return new LayerPosition(layer, position);
+    }
+    
     
 }

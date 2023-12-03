@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.SymbolStore;
+using Unity.VisualScripting;
 using UnityEditor.Build;
 using UnityEngine;
 
@@ -56,6 +57,8 @@ public abstract class BaseBuild : BaseObstacle
 
     // 保存线段的集合
     protected List<Line> m_lines = new();
+    
+    protected Dictionary<BaseObstacle,Line> m_lineDic = new();
 
 
     protected virtual void Awake()
@@ -77,7 +80,7 @@ public abstract class BaseBuild : BaseObstacle
         DestroyLines();
     }
 
-    protected void Update()
+    protected void FixedUpdate()
     {
         OnMove();
     }
@@ -129,7 +132,34 @@ public abstract class BaseBuild : BaseObstacle
     /// <param name="end"></param>
     protected void AddLine(BaseObstacle end)
     {
-        m_lines.Add(Line.DrawLine(transform.position, end.transform.position));
+        // m_lines.Add(Line.DrawLine(transform.position, end.transform.position));
+        m_lineDic.Add(end,Line.DrawLine(transform.position, end.transform.position));
+    }
+
+
+    /// <summary>
+    /// 获取线
+    /// </summary>
+    /// <param name="obs"></param>
+    /// <returns></returns>
+    public Line GetLine(BaseObstacle obs)
+    {
+        return m_lineDic[obs];
+    }
+    
+    /// <summary>
+    /// 销毁所有线段
+    /// </summary>
+    protected void DestroyLines()
+    {
+        foreach (var line in m_lineDic)
+        {
+            if (!line.Value.gameObject.IsDestroyed())
+            {
+                Destroy(line.Value.gameObject);
+            }
+        }
+        m_lineDic.Clear();
     }
 
 
@@ -142,18 +172,6 @@ public abstract class BaseBuild : BaseObstacle
         return true;
     }
 
-    /// <summary>
-    /// 销毁所有线段
-    /// </summary>
-    protected void DestroyLines()
-    {
-        foreach (var line in m_lines)
-        {
-            Destroy(line.gameObject);
-        }
-
-        m_lines.Clear();
-    }
 }
 
 

@@ -202,6 +202,12 @@ public class GameManager : MonoBehaviour
         }
     }
     
+    
+    /// <summary>
+    /// 获取障碍
+    /// </summary>
+    /// <param name="vector3"></param>
+    /// <returns></returns>
     public BaseObstacle GetObstacle(Vector3 vector3)
     {
         var baseBuild = GetBuild(m_Grid.LocalToCell(vector3));
@@ -209,8 +215,13 @@ public class GameManager : MonoBehaviour
         var baseTerrain = GetTerrain<BaseTerrain>(m_Grid.LocalToCell(vector3));
         return baseTerrain != null ? baseTerrain : null;
     }
-
-
+    
+    /// <summary>
+    /// 扫描附近物品
+    /// </summary>
+    /// <param name="layerPosition"></param>
+    /// <param name="curVector3"></param>
+    /// <param name="action"></param>
     public void Scan(LayerPosition layerPosition,Vector3 curVector3,Action<BaseObstacle> action)
     {
         layerPosition.Scan(curVector3, v3 =>

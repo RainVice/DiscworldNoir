@@ -1,23 +1,44 @@
-﻿using UnityEngine;
+﻿using System;
+using Effect;
+using UnityEngine;
 
 /// <summary>
 /// 控制线段的大小
 /// </summary>
 public class Line : MonoBehaviour
 {
-    private Vector2 m_StartPos;
-    private Vector2 m_EndPos;
-    private float m_Magnitude;
-    private float m_Angle;
+
+    public GameObject circle;
     
-    public void InitLine(Vector2 startPos, Vector2 endPos)
+    private Vector2 StartPos { get; set; }
+    private Vector2 EndPos { get; set; }
+    private LayerPosition StartLayerPosition { get; set; }
+    private LayerPosition EndLayerPosition { get; set; }
+    private float Magnitude { get; set; }
+    private float Angle { get; set; }
+
+    private void Awake()
     {
-        var offset = startPos - endPos;
-        m_StartPos = startPos;
-        m_EndPos = endPos;
-        m_Magnitude = offset.magnitude;
-        m_Angle = Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg;
+        StartLayerPosition = LayerPosition.Vector3ToLayerPosition(StartPos);
+        EndLayerPosition = LayerPosition.Vector3ToLayerPosition(EndPos);
     }
+
+
+    public void Push(bool direction)
+    {
+        var start = StartPos;
+        var end = EndPos;
+        if (!direction)
+        {
+            start = EndPos;
+            end = StartPos;
+        }
+
+        var instantiate = Instantiate(circle,start,Quaternion.identity);
+        this.CreateEffect().AddEffect(instantiate.transform.SlideTFTo(start,end)).Play(() => Destroy(instantiate));
+    }
+    
+    
     /// <summary>
     /// 画线
     /// </summary>
@@ -39,7 +60,12 @@ public class Line : MonoBehaviour
         var eulerAngles = instantiate.transform.eulerAngles;
         eulerAngles.z = angle;
         instantiate.transform.eulerAngles = eulerAngles;
-        return instantiate.GetComponent<Line>();
+        var component = instantiate.GetComponent<Line>();
+        component.StartPos = startPos;
+        component.EndPos = endPos;
+        component.Magnitude = magnitude;
+        component.Angle = angle;
+        return component;
     }
     
     

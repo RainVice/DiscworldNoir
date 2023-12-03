@@ -16,17 +16,47 @@ public class CionBuild : BaseBuild
     private List<CrystalTerrain> m_crystalTerrains = new();
     // 线路集合
     private List<WayBuild> m_wayBuilds = new();
+    
+    // 水晶库存
+    private int m_CrystalCount;
+    // 生产计时
+    private float m_ProductionTime;
+    // 运输计时
+    private float m_WayTime;
+    
     protected override void Awake()
     {
         base.Awake();
         productionSpeed = m_buildData.productionSpeed;
         waySpeed = m_buildData.waySpeed;
     }
+    
+    private void Update()
+    {
+        m_ProductionTime += Time.deltaTime;
+        m_WayTime += Time.deltaTime;
+        if (m_ProductionTime >= productionSpeed)
+        {
+            m_ProductionTime %= productionSpeed;
+            // todo 生产
+            foreach (var crystalTerrain in m_crystalTerrains)
+            {
+                m_lineDic[crystalTerrain].Push(false);
+
+            }
+        }
+
+        if (m_WayTime >= waySpeed)
+        {
+            m_WayTime %= waySpeed;
+            // todo 运输
+            
+        }
+    }
 
     protected override void OnScan()
     {
         base.OnScan();
-
         // 扫描之前清理上一次数据
         m_homeBuild = null;
         m_crystalTerrains.Clear();
@@ -34,8 +64,7 @@ public class CionBuild : BaseBuild
 
         // 扫描周围的地形
         var layerPosition = new LayerPosition(distance);
-        GameManager.Instance.Scan(layerPosition,transform.position, obstacle =>
-        {
+        GameManager.Instance.Scan(layerPosition,transform.position, obstacle => {
             switch (obstacle)
             {
                 case CrystalTerrain terrain:
@@ -53,8 +82,7 @@ public class CionBuild : BaseBuild
             }
         });
     }
-
-
+    
     public override bool CanPlace()
     {
         return m_crystalTerrains.Count >= 1;
