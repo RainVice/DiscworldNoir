@@ -1,16 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 
 public class WayBuild : BaseWay
 {
     
-
+    
 
     protected override void OnScan(out Action clean, out Action<BaseObstacle> action)
     {
-        clean = () =>
-        {
-            
-        };
+        clean = null;
         action = obstacle =>
         {
             if (obstacle as BaseBuild)
@@ -23,4 +21,13 @@ public class WayBuild : BaseWay
             }
         };
     }
+    
+    
+    public override Resource IsOuts()
+    {
+        return Resource.All;
+    }
+    
+    
+    
 }

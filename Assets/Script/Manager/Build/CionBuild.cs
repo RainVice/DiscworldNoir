@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 
 public class CionBuild : BaseProduce
 {
@@ -26,39 +24,34 @@ public class CionBuild : BaseProduce
     protected override void OnProduce()
     {
         base.OnProduce();
-        foreach (var baseObstacle in obstacles.Keys.Where(
-                     obstaclesKey => obstaclesKey.IsSubclassOf(
-                         typeof(BaseTerrain)
-                         )
-                     ).SelectMany(
-                     obstaclesKey => obstacles[obstaclesKey]
-                     )
-                 )
+        foreach (var obstaclesValue in obstacles.Values)
         {
-            m_lineDic[baseObstacle].Push(false, () =>
+            foreach (var baseObstacle in obstaclesValue)
             {
-                AddNum(baseObstacle.GetType());
-            });
+                var isOut = baseObstacle.IsOut();
+                if (isOut != Resource.None)
+                {
+                    m_lineDic[baseObstacle].Push(false, () =>
+                    {
+                        AddNum(isOut);
+                    });
+                }
+            }
         }
     }
     protected override void OnWay()
     {
         base.OnWay();
-        
-        if (GetNum(typeof(CrystalTerrain)) > 0)
+        foreach (var obstaclesValue in obstacles.Values)
         {
-            if (obstacles.ContainsKey(typeof(HomeBuild)))
+            foreach (var baseObstacle in obstaclesValue)
             {
-                foreach (var homeBuild in obstacles[typeof(HomeBuild)].OfType<HomeBuild>())
+                var baseBuild = baseObstacle as BaseBuild;
+                if (baseBuild == null) continue;
+                if (baseBuild.IsNeed() == Resource.None) continue;
+                if (GetNum(baseBuild.IsNeed()) > 0)
                 {
-                    m_lineDic[homeBuild].Push(true, () => { homeBuild.AddNum(typeof(CrystalTerrain)); });
-                }
-            }
-            else if (obstacles.ContainsKey(typeof(WayBuild)))
-            {
-                foreach (var wayBuild in obstacles[typeof(WayBuild)].OfType<WayBuild>())
-                {
-                    m_lineDic[wayBuild].Push(true, () => { wayBuild.AddNum(typeof(CrystalTerrain)); });
+                    m_lineDic[baseBuild].Push(true, () => { baseBuild.AddNum(baseBuild.IsNeed()); });
                 }
             }
         }

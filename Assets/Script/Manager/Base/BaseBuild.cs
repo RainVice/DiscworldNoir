@@ -12,8 +12,6 @@ using UnityEngine;
 public abstract class BaseBuild : BaseObstacle
 {
     // **************** 属性 *****************
-    // 障碍类型
-    public ObstacleType ObstacleType => m_obstacleType;
     // 当前座标
     public Vector3Int CurPos
     {
@@ -29,7 +27,7 @@ public abstract class BaseBuild : BaseObstacle
 
     // ***************** 变量 ******************
     // 建筑中文名
-    protected string name;
+    protected string CName;
     // 范围
     protected int distance;
     // 等级
@@ -49,7 +47,8 @@ public abstract class BaseBuild : BaseObstacle
     // 连接的障碍
     protected Dictionary<Type, List<BaseObstacle>> obstacles = new();
     // 库存物资
-    protected Dictionary<Type, int> inventory = new();
+    protected Dictionary<Resource, int> inventory = new();
+    // protected Dictionary<Type, int> inventory = new();
     
     // 数据
     protected BuildData m_buildData;
@@ -71,7 +70,7 @@ public abstract class BaseBuild : BaseObstacle
         m_obstacleType = ObstacleType.Build;
         m_buildData = GameManager.Instance.GetBuildData(GetType().Name);
         if (m_buildData == null) return;
-        name = m_buildData.name;
+        CName = m_buildData.name;
         distance = m_buildData.distance;
         level = m_buildData.level;
         isPlace = m_buildData.isPlace;
@@ -206,46 +205,18 @@ public abstract class BaseBuild : BaseObstacle
     public virtual void ChangeData(Type type, int num = 1) { }
 
     /// <summary>
-    /// 询问是否需要物质
-    /// </summary>
-    /// <returns></returns>
-    public virtual Type IsNeed()
-    {
-        return null;
-    }
-
-    /// <summary>
     /// 增加资源
     /// </summary>
     /// <param name="type"></param>
-    public void AddNum(Type type)
+    public void AddNum(Resource resource)
     {
-        inventory.TryAdd(type, 0);
-        inventory[type]++;
+        inventory.TryAdd(resource, 0);
+        inventory[resource]++;
     }
     
-    public int GetNum(Type type)
+    public int GetNum(Resource resource)
     {
-        return inventory.TryGetValue(type, out var num) ? num : 0;
+        return inventory.TryGetValue(resource, out var num) ? num : 0;
     }
-
     
-
-}
-
-
-[Flags]
-public enum BuildType
-{
-    // 攻击
-    Attack = 1,
-
-    // 防御
-    Defense = 2,
-
-    // 生产
-    Production = 4,
-
-    // 运输
-    Way = 8
 }

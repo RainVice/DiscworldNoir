@@ -23,8 +23,8 @@ public class HomeBuild : BaseAttack
         m_CrystalCount+=num;
     }
 
-    public override Type IsNeed()
+    public override Resource IsNeed()
     {
-        return GetType();
+        return Resource.Crystal;
     }
 }

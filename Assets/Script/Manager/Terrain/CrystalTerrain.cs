@@ -1,4 +1,6 @@
-﻿public class CrystalTerrain : BaseTerrain
+﻿using System;
+
+public class CrystalTerrain : BaseTerrain
 {
     
     protected override void Awake()
@@ -7,5 +9,10 @@
         m_terrainType = TerrainType.Crystal;
         
     }
-    
+
+
+    public override Resource IsOut()
+    {
+        return Resource.Crystal;
+    }
 }
