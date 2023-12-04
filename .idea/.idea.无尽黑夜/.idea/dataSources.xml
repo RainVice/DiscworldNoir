@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="DiscworldNoir" uuid="88bc4d23-be57-4b50-8799-b3942ca8c9f3">
+    <data-source source="LOCAL" name="DiscworldNoir" uuid="8b88d8bb-4250-4565-bc04-7701c48f4473">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:C:\Users\Rainvice\OneDrive - MSFT\Desktop\code\Unity\无尽黑夜\Assets\DB\DiscworldNoir.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:C:\Users\Rainvice\Desktop\code\Untiy\无尽黑夜\Assets\DB\DiscworldNoir.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
       <libraries>
         <library>

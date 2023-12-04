@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
+using DB.Constraint;
 using Mono.Data.Sqlite;
 using UnityEngine;
 
@@ -118,9 +120,12 @@ namespace DB
                 {
                     var field = fieldInfos[i];
                     if (!field.IsPublic) continue;
-
                     var typeToString = GetTypeToString(field.FieldType);
                     sql += $"{field.Name} {typeToString}";
+                    if (field.GetCustomAttribute<PrimaryKey>() != null)
+                    {
+                        sql += " PRIMARY KEY";
+                    }
 
                     if (i != fieldInfos.Length - 1)
                     {

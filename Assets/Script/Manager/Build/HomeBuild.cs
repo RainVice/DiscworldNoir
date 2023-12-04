@@ -28,6 +28,5 @@ public class HomeBuild : BaseBuild
     public void AddCrystal(int num = 1)
     {
         m_CrystalCount+=num;
-        Debug.Log(m_CrystalCount);
     }
 }

@@ -1,8 +1,10 @@
 ﻿using DB;
+using DB.Constraint;
 
 public class BuildData : BaseData
 {
     // 建筑名称
+    [PrimaryKey]
     public string buildName;
     // 建筑中文名
     public string name;
@@ -31,7 +33,7 @@ public class BuildData : BaseData
     
     public override string ToString()
     {
-        return $"建筑名称：{buildName} \n范围：{distance} \n等级：{level} \n是否放置：{isPlace} \n类型：{buildType} \n生命：{hp} \n升级价格：{upgradePrice} \n价格：{price} \n攻击力：{attack} \n生产速度：{productionSpeed} \n运输速度：{waySpeed} \n描述：{description}";
+        return $"建筑名称：{name} \n范围：{distance} \n等级：{level} \n是否放置：{isPlace} \n类型：{buildType} \n生命：{hp} \n升级价格：{upgradePrice} \n价格：{price} \n攻击力：{attack} \n生产速度：{productionSpeed} \n运输速度：{waySpeed} \n描述：{description}";
     }
     
 }

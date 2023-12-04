@@ -27,26 +27,33 @@ public abstract class BaseBuild : BaseObstacle
     }
 
     // ***************** 变量 ******************
+    // 建筑中文名
+    protected string name;
     // 范围
     protected int distance;
-
     // 等级
     protected int level;
-
     // 是否放置
     protected bool isPlace = false;
-
     // 类型
     protected BuildType buildType;
-
     // 生命
     protected int hp;
-
     // 升级价格
     protected int upgradePrice;
-
     // 价格
     protected int price;
+    // 攻击力
+    protected int attack;
+    // 生产速度
+    protected int productionSpeed;
+    // 运输速度
+    protected int waySpeed;
+    
+    // 生产计时
+    private float m_productionTimer;
+    // 运输计时
+    private float m_wayTimer;
 
     // 数据
     protected BuildData m_buildData;
@@ -68,6 +75,7 @@ public abstract class BaseBuild : BaseObstacle
         m_obstacleType = ObstacleType.Build;
         m_buildData = GameManager.Instance.GetBuildData(GetType().Name);
         if (m_buildData == null) return;
+        name = m_buildData.name;
         distance = m_buildData.distance;
         level = m_buildData.level;
         isPlace = m_buildData.isPlace;
@@ -75,6 +83,9 @@ public abstract class BaseBuild : BaseObstacle
         hp = m_buildData.hp;
         upgradePrice = m_buildData.upgradePrice;
         price = m_buildData.price;
+        attack = m_buildData.attack;
+        productionSpeed = m_buildData.productionSpeed;
+        waySpeed = m_buildData.waySpeed;
     }
 
     protected virtual void OnDestroy()
@@ -85,6 +96,35 @@ public abstract class BaseBuild : BaseObstacle
     protected void FixedUpdate()
     {
         OnMove();
+        if (productionSpeed != 0 && isPlace)
+        {
+            m_productionTimer += Time.fixedDeltaTime;
+            if (m_productionTimer >= Constant.DEFAULTTIME / productionSpeed)
+            {
+                m_productionTimer %= Constant.DEFAULTTIME / productionSpeed;
+                OnProduce();
+            }
+        }
+        
+        if (waySpeed!= 0 && isPlace)
+        {
+            m_wayTimer += Time.fixedDeltaTime;
+            if (m_wayTimer >= Constant.DEFAULTTIME / waySpeed)
+            {
+                m_wayTimer %= Constant.DEFAULTTIME / waySpeed;
+                OnWay();
+            }
+        }
+        
+    }
+    protected virtual void OnProduce()
+    {
+        
+    }
+
+    protected virtual void OnWay()
+    {
+        
     }
 
     /// <summary>

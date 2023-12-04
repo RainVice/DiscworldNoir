@@ -5,7 +5,7 @@ MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - btnHome: {instanceID: 0}
-  - Home: {fileID: 8237620205384342735, guid: b53c0b57f17bdc0499974d056e75a44d, type: 3}
+  - Home: {instanceID: 0}
   - BtnWall: {instanceID: 0}
   - Wall: {instanceID: 0}
   - btnTurret: {instanceID: 0}

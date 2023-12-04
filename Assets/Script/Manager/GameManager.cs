@@ -61,7 +61,8 @@ public class GameManager : MonoBehaviour
     /// <returns></returns>
     public BuildData GetBuildData(string name)
     {
-        return m_BuildData[name];
+        if (m_BuildData == null) return null;
+        return m_BuildData.TryGetValue(name, out var data) ? data : null;
     }
     
     /// <summary>

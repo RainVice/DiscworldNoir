@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class CionBuild : BaseBuild
 {
-    // 生产速度
-    private int productionSpeed;
-
-    // 运输速度
-    private int waySpeed;
-
     // 大本营
     private HomeBuild m_homeBuild;
 
@@ -29,13 +21,6 @@ public class CionBuild : BaseBuild
     // 运输计时
     private float m_WayTime;
 
-    protected override void Awake()
-    {
-        base.Awake();
-        productionSpeed = m_buildData.productionSpeed;
-        waySpeed = m_buildData.waySpeed;
-    }
-
     private void Update()
     {
         if (isPlace)
@@ -52,30 +37,54 @@ public class CionBuild : BaseBuild
                 }
             }
             // 运输
-            if (m_WayTime >= waySpeed && m_CrystalCount > 0)
+            // if (m_WayTime >= waySpeed && m_CrystalCount > 0)
+            // {
+            //     if (m_CrystalCount > 0)
+            //     {
+            //         foreach (var wayBuild in m_wayBuilds)
+            //         {
+            //             m_lineDic[wayBuild].Push(true, () =>
+            //             {
+            //                 wayBuild.AddCylinder();
+            //                 m_CrystalCount--;
+            //             });
+            //         }
+            //     }
+            //     // 送到大本营
+            //     if (m_homeBuild)
+            //     {
+            //         m_lineDic[m_homeBuild].Push(true, () =>
+            //         {
+            //             m_CrystalCount--;
+            //             m_homeBuild.AddCrystal();
+            //         });
+            //     }
+            //     
+            // }
+        }
+    }
+
+    protected override void OnWay()
+    {
+        base.OnWay();
+        if (m_CrystalCount > 0)
+        {
+            foreach (var wayBuild in m_wayBuilds)
             {
-                if (m_CrystalCount > 0)
+                m_lineDic[wayBuild].Push(true, () =>
                 {
-                    m_WayTime %= waySpeed;
-                    foreach (var wayBuild in m_wayBuilds)
-                    {
-                        m_lineDic[wayBuild].Push(true, () =>
-                        {
-                            wayBuild.AddCylinder();
-                            m_CrystalCount--;
-                        });
-                    }
-                }
-                // 送到大本营
-                if (m_homeBuild)
+                    wayBuild.AddCylinder();
+                    m_CrystalCount--;
+                });
+            }
+            // 送到大本营
+            if (m_homeBuild)
+            {
+                m_lineDic[m_homeBuild].Push(true, () =>
                 {
-                    m_lineDic[m_homeBuild].Push(true, () =>
-                    {
-                        m_CrystalCount--;
-                        m_homeBuild.AddCrystal();
-                    });
-                }
-                
+                    m_CrystalCount--;
+                    m_homeBuild.AddCrystal();
+                });
             }
         }
     }

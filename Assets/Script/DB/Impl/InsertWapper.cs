@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace DB
 {
@@ -63,7 +64,7 @@ namespace DB
                 }
                 else
                 {
-                    value = field.GetValue(data).ToString();
+                    value = field.GetValue(data) == null ? "null" : field.GetValue(data).ToString();
                 }
                 temp += DBUtil.TypeToValue(field.FieldType, value);
                 if (i != fieldInfos.Length - 1)

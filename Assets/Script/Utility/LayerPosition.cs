@@ -3,7 +3,7 @@ using UnityEngine;
 
 public struct LayerPosition
 {
-    
+    private static float Length = 1.05f;
     public int layer;
     public int position;
     
@@ -54,16 +54,31 @@ public struct LayerPosition
     /// <summary>
     /// 角度
     /// </summary>
-    public float Angle => 360f / layer / 6f * position;
+    public float Angle
+    {
+        get
+        {
+            if (layer == 0) return 0;
+            return 360f / layer / 6f * position;
+        }
+    }
+
     /// <summary>
     /// 距离
     /// </summary>
-    public float Distance => layer * 1.05f;
+    public float Distance => layer * Length;
     /// <summary>
     /// 此层个数
     /// </summary>
-    public int Count => layer * 6;
-    
+    public int Count
+    {
+        get
+        {
+            if (layer == 0) return 1;
+            return layer * 6;
+        }
+    }
+
     /// <summary>
     /// 计算 Vertor3
     /// </summary>
@@ -101,7 +116,7 @@ public struct LayerPosition
     /// <returns></returns>
     public static LayerPosition Vector3ToLayerPosition(Vector3 vector3)
     {
-        var layer = Mathf.RoundToInt(vector3.magnitude / 1.05f);
+        var layer = Mathf.RoundToInt(vector3.magnitude / Length);
         // 计算vertor3角度
         var angle = Mathf.Atan2(vector3.y, vector3.x) * Mathf.Rad2Deg;
         if (angle < 0) angle += 360;
