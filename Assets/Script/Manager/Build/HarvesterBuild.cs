@@ -1,4 +1,4 @@
-﻿public class HarvesterBuild : BaseBuild
+﻿public class HarvesterBuild : BaseProduce
 {
     
 }

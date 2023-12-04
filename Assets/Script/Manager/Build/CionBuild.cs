@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-public class CionBuild : BaseBuild
+public class CionBuild : BaseProduce
 {
     // 大本营
     private HomeBuild m_homeBuild;
@@ -20,107 +22,100 @@ public class CionBuild : BaseBuild
 
     // 运输计时
     private float m_WayTime;
-
-    private void Update()
+    
+    protected override void OnProduce()
     {
-        if (isPlace)
+        base.OnProduce();
+        foreach (var baseObstacle in obstacles.Keys.Where(
+                     obstaclesKey => obstaclesKey.IsSubclassOf(
+                         typeof(BaseTerrain)
+                         )
+                     ).SelectMany(
+                     obstaclesKey => obstacles[obstaclesKey]
+                     )
+                 )
         {
-            m_ProductionTime += Time.deltaTime;
-            m_WayTime += Time.deltaTime;
-            // 生产
-            if (m_ProductionTime >= productionSpeed)
+            m_lineDic[baseObstacle].Push(false, () =>
             {
-                m_ProductionTime %= productionSpeed;
-                foreach (var crystalTerrain in m_crystalTerrains)
-                {
-                    m_lineDic[crystalTerrain].Push(false, () => { m_CrystalCount++; });
-                }
-            }
-            // 运输
-            // if (m_WayTime >= waySpeed && m_CrystalCount > 0)
-            // {
-            //     if (m_CrystalCount > 0)
-            //     {
-            //         foreach (var wayBuild in m_wayBuilds)
-            //         {
-            //             m_lineDic[wayBuild].Push(true, () =>
-            //             {
-            //                 wayBuild.AddCylinder();
-            //                 m_CrystalCount--;
-            //             });
-            //         }
-            //     }
-            //     // 送到大本营
-            //     if (m_homeBuild)
-            //     {
-            //         m_lineDic[m_homeBuild].Push(true, () =>
-            //         {
-            //             m_CrystalCount--;
-            //             m_homeBuild.AddCrystal();
-            //         });
-            //     }
-            //     
-            // }
+                AddNum(baseObstacle.GetType());
+            });
         }
     }
-
     protected override void OnWay()
     {
         base.OnWay();
-        if (m_CrystalCount > 0)
+        
+        foreach (var keyValuePair in inventory)
         {
-            foreach (var wayBuild in m_wayBuilds)
+            // todo 推送到路线
+        }
+        
+        foreach (var obstaclesKey in obstacles.Keys)
+        {
+            if (obstaclesKey.IsSubclassOf(typeof(BaseWay)))
             {
-                m_lineDic[wayBuild].Push(true, () =>
+                foreach (var baseObstacle in obstacles[obstaclesKey])
                 {
-                    wayBuild.AddCylinder();
-                    m_CrystalCount--;
-                });
-            }
-            // 送到大本营
-            if (m_homeBuild)
-            {
-                m_lineDic[m_homeBuild].Push(true, () =>
-                {
-                    m_CrystalCount--;
-                    m_homeBuild.AddCrystal();
-                });
+                    
+                }
             }
         }
+        
+
+        if (GetNum(typeof(CrystalTerrain)) > 0)
+        {
+            if (obstacles.ContainsKey(typeof(HomeBuild)))
+            {
+                var homeBuild = obstacles[typeof(HomeBuild)][0] as HomeBuild;
+                if (homeBuild != null)
+                    m_lineDic[homeBuild].Push(true, () => { homeBuild.AddNum(typeof(CrystalTerrain)); });
+            }
+        }
+        else
+        {
+            // todo 推送到路线
+        }
+        
+        // if (m_CrystalCount > 0)
+        // {
+        //     foreach (var wayBuild in m_wayBuilds)
+        //     {
+        //         m_lineDic[wayBuild].Push(true, () =>
+        //         {
+        //             wayBuild.AddCylinder();
+        //             m_CrystalCount--;
+        //         });
+        //     }
+        //     // 送到大本营
+        //     if (m_homeBuild)
+        //     {
+        //         m_lineDic[m_homeBuild].Push(true, () =>
+        //         {
+        //             m_CrystalCount--;
+        //             m_homeBuild.ChangeData();
+        //         });
+        //     }
+        // }
     }
 
-    protected override void OnScan()
+    protected override void OnScan(out Action clean, out Action<BaseObstacle> action)
     {
-        base.OnScan();
-        // 扫描之前清理上一次数据
-        m_homeBuild = null;
-        m_crystalTerrains.Clear();
-        m_wayBuilds.Clear();
-
-        // 扫描周围的地形
-        var layerPosition = new LayerPosition(distance);
-        GameManager.Instance.Scan(layerPosition, transform.position, obstacle =>
+        clean = null;
+        action = obstacle =>
         {
             switch (obstacle)
             {
-                case CrystalTerrain terrain:
-                    AddLine(terrain);
-                    m_crystalTerrains.Add(terrain);
-                    break;
-                case HomeBuild home:
-                    m_homeBuild = home;
-                    AddLine(home);
-                    break;
-                case WayBuild way:
-                    m_wayBuilds.Add(way);
-                    AddLine(way);
+                case CrystalTerrain :
+                case HomeBuild :
+                case WayBuild :
+                    AddLine(obstacle);
                     break;
             }
-        });
+        };
     }
 
     public override bool CanPlace()
     {
-        return m_crystalTerrains.Count >= 1;
+        return obstacles.ContainsKey(typeof(CrystalTerrain));
     }
 }

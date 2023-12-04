@@ -1,19 +1,32 @@
-﻿public class WayBuild : BaseBuild
+﻿using System;
+
+public class WayBuild : BaseWay
 {
     
     private int m_CylinderCount;
-    private int m_WaySpeed;
 
-    protected override void Awake()
+
+    protected override void OnScan(out Action clean, out Action<BaseObstacle> action)
     {
-        base.Awake();
-        m_WaySpeed = m_buildData.waySpeed;
+        clean = () =>
+        {
+            
+        };
+        action = obstacle =>
+        {
+            if (obstacle as BaseBuild)
+            {
+                var baseBuild = obstacle as BaseBuild;
+                if (! (baseBuild as WallBuild))
+                {
+                    AddLine(baseBuild);
+                }
+            }
+        };
     }
-
+    
     public void AddCylinder(int count = 1)
     {
         m_CylinderCount += count;
     }
-    
-
 }

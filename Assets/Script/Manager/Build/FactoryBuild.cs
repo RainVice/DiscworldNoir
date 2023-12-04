@@ -1,4 +1,4 @@
-﻿public class FactoryBuild : BaseBuild
+﻿public class FactoryBuild : BaseProduce
 {
     
 }

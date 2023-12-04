@@ -3,7 +3,7 @@
 /// <summary>
 /// 铁矿挖掘控制类
 /// </summary>
-public class MiningBuild : BaseBuild
+public class MiningBuild : BaseProduce
 {
     
 }

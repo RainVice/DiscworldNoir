@@ -3,7 +3,7 @@
 /// <summary>
 /// 炮台建筑控制类
 /// </summary>
-public class TurretBuild : BaseBuild
+public class TurretBuild : BaseAttack
 {
     
 }

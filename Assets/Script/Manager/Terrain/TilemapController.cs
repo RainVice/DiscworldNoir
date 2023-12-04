@@ -160,8 +160,8 @@ public class TilemapController : MonoBehaviour
         // 如果坐标改变，则触发事件
         if (m_PreVector3Int != cellPos && m_Tilemap.HasTile(cellPos))
         {
-            OnMouseEnterTile(cellPos);
             OnMouseExitTile(m_PreVector3Int);
+            OnMouseEnterTile(cellPos);
             m_PreVector3Int = cellPos;
         }
     }

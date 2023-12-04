@@ -1,4 +1,4 @@
-﻿public class BulletBuild : BaseBuild
+﻿public class BulletBuild : BaseProduce
 {
     
 }

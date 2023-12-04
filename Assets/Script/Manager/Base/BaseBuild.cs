@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.SymbolStore;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEditor.Build;
 using UnityEngine;
@@ -43,18 +44,13 @@ public abstract class BaseBuild : BaseObstacle
     protected int upgradePrice;
     // 价格
     protected int price;
-    // 攻击力
-    protected int attack;
-    // 生产速度
-    protected int productionSpeed;
-    // 运输速度
-    protected int waySpeed;
     
-    // 生产计时
-    private float m_productionTimer;
-    // 运输计时
-    private float m_wayTimer;
-
+    
+    // 连接的障碍
+    protected Dictionary<Type, List<BaseObstacle>> obstacles = new();
+    // 库存物资
+    protected Dictionary<Type, int> inventory = new();
+    
     // 数据
     protected BuildData m_buildData;
 
@@ -83,50 +79,18 @@ public abstract class BaseBuild : BaseObstacle
         hp = m_buildData.hp;
         upgradePrice = m_buildData.upgradePrice;
         price = m_buildData.price;
-        attack = m_buildData.attack;
-        productionSpeed = m_buildData.productionSpeed;
-        waySpeed = m_buildData.waySpeed;
     }
 
     protected virtual void OnDestroy()
     {
-        DestroyLines();
+        DestroyPre();
     }
 
-    protected void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
+        // 调用移动事件
         OnMove();
-        if (productionSpeed != 0 && isPlace)
-        {
-            m_productionTimer += Time.fixedDeltaTime;
-            if (m_productionTimer >= Constant.DEFAULTTIME / productionSpeed)
-            {
-                m_productionTimer %= Constant.DEFAULTTIME / productionSpeed;
-                OnProduce();
-            }
-        }
-        
-        if (waySpeed!= 0 && isPlace)
-        {
-            m_wayTimer += Time.fixedDeltaTime;
-            if (m_wayTimer >= Constant.DEFAULTTIME / waySpeed)
-            {
-                m_wayTimer %= Constant.DEFAULTTIME / waySpeed;
-                OnWay();
-            }
-        }
-        
     }
-    protected virtual void OnProduce()
-    {
-        
-    }
-
-    protected virtual void OnWay()
-    {
-        
-    }
-
     /// <summary>
     /// 移动事件
     /// </summary>
@@ -142,7 +106,8 @@ public abstract class BaseBuild : BaseObstacle
         }
         if (m_lastPos == transform.position) return;
         m_lastPos = transform.position;
-        OnScan();
+        // 扫描
+        Scan();
         // 判断是否可以放置
         if (CanPlace())
         {
@@ -158,24 +123,39 @@ public abstract class BaseBuild : BaseObstacle
         }
 
     }
+    private void Scan()
+    {        
+        // 销毁上一次资源
+        DestroyPre();
+        OnScan(out var clean, out var action);
+        clean?.Invoke();
+        var layerPosition = new LayerPosition(distance);
+        GameManager.Instance.Scan(layerPosition, transform.position, obstacle => action?.Invoke(obstacle));
+    }
 
     /// <summary>
     /// 扫描周围的格子
     /// </summary>
-    protected virtual void OnScan()
+    /// <param name="clean">扫描之前的清理</param>
+    /// <param name="action">扫描后结果的处理</param>
+    protected virtual void OnScan(out Action clean, out Action<BaseObstacle> action)
     {
-        // 销毁上一次资源
-        DestroyLines();
+        clean = null;
+        action = null;
     }
-
+    
     /// <summary>
     /// 添加线
     /// </summary>
     /// <param name="end"></param>
     protected void AddLine(BaseObstacle end)
     {
-        // m_lines.Add(Line.DrawLine(transform.position, end.transform.position));
         m_lineDic.Add(end,Line.DrawLine(transform.position, end.transform.position));
+        if (!obstacles.ContainsKey(end.GetType()))
+        {
+            obstacles.Add(end.GetType(), new List<BaseObstacle>());
+        }
+        obstacles[end.GetType()].Add(end);
     }
 
 
@@ -192,16 +172,14 @@ public abstract class BaseBuild : BaseObstacle
     /// <summary>
     /// 销毁所有线段
     /// </summary>
-    protected void DestroyLines()
+    protected void DestroyPre()
     {
-        foreach (var line in m_lineDic)
+        foreach (var line in m_lineDic.Where(line => !line.Value.IsDestroyed()))
         {
-            if (!line.Value.IsDestroyed())
-            {
-                Destroy(line.Value.gameObject);
-            }
+            Destroy(line.Value.gameObject);
         }
         m_lineDic.Clear();
+        obstacles.Clear();
     }
 
 
@@ -213,6 +191,45 @@ public abstract class BaseBuild : BaseObstacle
     {
         return true;
     }
+    
+    /// <summary>
+    /// 添加物资数量
+    /// </summary>
+    /// <param name="num"> 默认数量是 1</param>
+    public virtual void ChangeData(int num = 1){}
+
+    /// <summary>
+    /// 添加物资数量(指定类型)
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="num"></param>
+    public virtual void ChangeData(Type type, int num = 1) { }
+
+    /// <summary>
+    /// 询问是否需要物质
+    /// </summary>
+    /// <returns></returns>
+    public virtual Type IsNeed()
+    {
+        return null;
+    }
+
+    /// <summary>
+    /// 增加资源
+    /// </summary>
+    /// <param name="type"></param>
+    public void AddNum(Type type)
+    {
+        inventory.TryAdd(type, 0);
+        inventory[type]++;
+    }
+    
+    public int GetNum(Type type)
+    {
+        return inventory.TryGetValue(type, out var num) ? num : 0;
+    }
+
+    
 
 }
 
