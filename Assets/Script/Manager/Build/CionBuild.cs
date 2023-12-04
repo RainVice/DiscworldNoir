@@ -45,57 +45,23 @@ public class CionBuild : BaseProduce
     {
         base.OnWay();
         
-        foreach (var keyValuePair in inventory)
-        {
-            // todo 推送到路线
-        }
-        
-        foreach (var obstaclesKey in obstacles.Keys)
-        {
-            if (obstaclesKey.IsSubclassOf(typeof(BaseWay)))
-            {
-                foreach (var baseObstacle in obstacles[obstaclesKey])
-                {
-                    
-                }
-            }
-        }
-        
-
         if (GetNum(typeof(CrystalTerrain)) > 0)
         {
             if (obstacles.ContainsKey(typeof(HomeBuild)))
             {
-                var homeBuild = obstacles[typeof(HomeBuild)][0] as HomeBuild;
-                if (homeBuild != null)
+                foreach (var homeBuild in obstacles[typeof(HomeBuild)].OfType<HomeBuild>())
+                {
                     m_lineDic[homeBuild].Push(true, () => { homeBuild.AddNum(typeof(CrystalTerrain)); });
+                }
+            }
+            else if (obstacles.ContainsKey(typeof(WayBuild)))
+            {
+                foreach (var wayBuild in obstacles[typeof(WayBuild)].OfType<WayBuild>())
+                {
+                    m_lineDic[wayBuild].Push(true, () => { wayBuild.AddNum(typeof(CrystalTerrain)); });
+                }
             }
         }
-        else
-        {
-            // todo 推送到路线
-        }
-        
-        // if (m_CrystalCount > 0)
-        // {
-        //     foreach (var wayBuild in m_wayBuilds)
-        //     {
-        //         m_lineDic[wayBuild].Push(true, () =>
-        //         {
-        //             wayBuild.AddCylinder();
-        //             m_CrystalCount--;
-        //         });
-        //     }
-        //     // 送到大本营
-        //     if (m_homeBuild)
-        //     {
-        //         m_lineDic[m_homeBuild].Push(true, () =>
-        //         {
-        //             m_CrystalCount--;
-        //             m_homeBuild.ChangeData();
-        //         });
-        //     }
-        // }
     }
 
     protected override void OnScan(out Action clean, out Action<BaseObstacle> action)

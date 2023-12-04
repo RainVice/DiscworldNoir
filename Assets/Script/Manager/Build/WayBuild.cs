@@ -3,7 +3,6 @@
 public class WayBuild : BaseWay
 {
     
-    private int m_CylinderCount;
 
 
     protected override void OnScan(out Action clean, out Action<BaseObstacle> action)
@@ -23,10 +22,5 @@ public class WayBuild : BaseWay
                 }
             }
         };
-    }
-    
-    public void AddCylinder(int count = 1)
-    {
-        m_CylinderCount += count;
     }
 }
