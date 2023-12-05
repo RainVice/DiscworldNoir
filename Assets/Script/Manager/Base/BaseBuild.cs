@@ -64,11 +64,11 @@ public abstract class BaseBuild : BaseObstacle
     // 未放置状态的上一步位置
     protected Vector3 m_lastPos;
 
-    // 保存线段的集合
-    protected List<Line> m_lines = new();
-    
     // 线条集合
     protected Dictionary<BaseObstacle,Line> m_lineDic = new();
+    
+    // 链接者
+    protected List<BaseBuild> m_connecter = new();
 
     protected virtual void Awake()
     {
@@ -88,6 +88,11 @@ public abstract class BaseBuild : BaseObstacle
 
     protected virtual void OnDestroy()
     {
+        foreach (var baseBuild in m_connecter)
+        {
+            baseBuild.DestroyLine(this);
+        }
+
         DestroyPre();
     }
 
@@ -106,8 +111,14 @@ public abstract class BaseBuild : BaseObstacle
             }
         }
     }
-    
-    
+
+
+    public void DestroyLine(BaseObstacle baseObstacle)
+    {
+        var line = m_lineDic[baseObstacle];
+        m_lineDic.Remove(baseObstacle);
+        Destroy(line);
+    }
 
     /// <summary>
     /// 运输事件
@@ -120,14 +131,6 @@ public abstract class BaseBuild : BaseObstacle
     /// </summary>
     protected virtual void OnMove()
     {
-        // 判断是否放置或者是否移动，如果是则不进行处理
-        if (isPlace)
-        {
-            foreach (var mLine in m_lines)
-            {
-                mLine.GetComponent<SpriteRenderer>().color = Color.white;
-            }
-        }
         if (m_lastPos == transform.position) return;
         m_lastPos = transform.position;
         // 扫描
@@ -175,6 +178,12 @@ public abstract class BaseBuild : BaseObstacle
     protected void AddLine(BaseObstacle end)
     {
         m_lineDic.Add(end,Line.DrawLine(transform.position, end.transform.position));
+
+        if (end is BaseBuild baseBuild)
+        {
+            m_connecter.Add(baseBuild);
+        }
+        
         if (!obstacles.ContainsKey(end.GetType()))
         {
             obstacles.Add(end.GetType(), new List<BaseObstacle>());
@@ -202,6 +211,7 @@ public abstract class BaseBuild : BaseObstacle
         {
             Destroy(line.Value.gameObject);
         }
+        m_connecter.Clear();
         m_lineDic.Clear();
         obstacles.Clear();
     }
@@ -243,5 +253,8 @@ public abstract class BaseBuild : BaseObstacle
     {
         return inventory.TryGetValue(resource, out var num) ? num : 0;
     }
+    
+    
+    
     
 }

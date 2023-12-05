@@ -22,7 +22,6 @@ public class CionBuild : BaseProduce
             }
         }
     }
-
     protected override void OnScan(out Action clean, out Action<BaseObstacle> action)
     {
         clean = null;
