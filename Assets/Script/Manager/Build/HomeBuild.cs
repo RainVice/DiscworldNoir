@@ -25,6 +25,6 @@ public class HomeBuild : BaseAttack
 
     public override Resource IsNeed()
     {
-        return Resource.Crystal;
+        return Resource.Crystal | Resource.Iron | Resource.Tree | Resource.Bullet;
     }
 }

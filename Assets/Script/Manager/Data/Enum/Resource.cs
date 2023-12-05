@@ -10,7 +10,9 @@ public enum Resource : uint
     Iron = 2,
     //树
     Tree = 4,
+    // 弹药
+    Bullet = 8,
     
     //所有
-    All = 2048
+    All = Crystal | Iron | Tree | Bullet,
 }

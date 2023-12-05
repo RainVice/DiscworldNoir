@@ -42,6 +42,11 @@ public abstract class BaseBuild : BaseObstacle
     protected int upgradePrice;
     // 价格
     protected int price;
+    // 运输速度
+    protected int waySpeed;
+    // 运输计时
+    private float m_wayTimer;
+
     
     
     // 连接的障碍
@@ -78,6 +83,7 @@ public abstract class BaseBuild : BaseObstacle
         hp = m_buildData.hp;
         upgradePrice = m_buildData.upgradePrice;
         price = m_buildData.price;
+        waySpeed = m_buildData.waySpeed;
     }
 
     protected virtual void OnDestroy()
@@ -89,7 +95,26 @@ public abstract class BaseBuild : BaseObstacle
     {
         // 调用移动事件
         OnMove();
+        // 判断是否可以调用运输事件
+        if (waySpeed!= 0 && isPlace)
+        {
+            m_wayTimer += Time.fixedDeltaTime;
+            if (m_wayTimer >= Constant.DEFAULTTIME / waySpeed)
+            {
+                m_wayTimer %= Constant.DEFAULTTIME / waySpeed;
+                OnWay();
+            }
+        }
     }
+    
+    
+
+    /// <summary>
+    /// 运输事件
+    /// </summary>
+    protected virtual void OnWay() { }
+
+    
     /// <summary>
     /// 移动事件
     /// </summary>
@@ -205,13 +230,13 @@ public abstract class BaseBuild : BaseObstacle
     public virtual void ChangeData(Type type, int num = 1) { }
 
     /// <summary>
-    /// 增加资源
+    /// 更改资源
     /// </summary>
     /// <param name="type"></param>
-    public void AddNum(Resource resource)
+    public void ChangeNum(Resource resource,int num = 1)
     {
         inventory.TryAdd(resource, 0);
-        inventory[resource]++;
+        inventory[resource] += num;
     }
     
     public int GetNum(Resource resource)
