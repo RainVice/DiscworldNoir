@@ -11,10 +11,6 @@ public class TilemapController : MonoBehaviour
     // ****************** 引用 ******************
     // 移动目标
     public Transform m_MoveTarget;
-    // 绿底瓦片
-    // public Tile tileGreen;
-    // 正常瓦片
-    // public Tile tileNormal;
     // 地图
     private Tilemap m_Tilemap;
     // 网格
@@ -31,13 +27,12 @@ public class TilemapController : MonoBehaviour
     private GameObject m_CurSelectedObject;
     // 实例化的游戏对象
     private GameObject m_InstanceGameObject;
-    // 实例化对象的SpriteRenderer
+    // 实例化对象的 SpriteRenderer
     private SpriteRenderer m_SpriteRenderer;
     // 摄像机
     private Camera m_Camera;
     public CinemachineVirtualCamera m_Cinemachine;
-
-
+    
     private void Awake()
     {
         m_Tilemap = GetComponentInChildren<Tilemap>();
@@ -55,7 +50,10 @@ public class TilemapController : MonoBehaviour
                 m_Terrains[i % m_Terrains.Length], 
                 m_Grid.CellToWorld(randomPoint),
                 Quaternion.identity);
+            instantiate.GetComponent<BaseTerrain>().CurPos = randomPoint;
             GameManager.Instance.AddTerrain(randomPoint,instantiate);
+            // 注册邻接表
+            GameManager.Instance.RegisterFrom(randomPoint);
         }
     }
 
@@ -200,7 +198,6 @@ public class TilemapController : MonoBehaviour
         } while (GameManager.Instance.HasTerrain(randomPoint));
         return randomPoint;
     }
-    
     
     /// <summary>
     /// 删除

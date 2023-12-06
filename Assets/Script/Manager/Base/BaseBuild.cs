@@ -12,12 +12,6 @@ using UnityEngine;
 public abstract class BaseBuild : BaseObstacle
 {
     // **************** 属性 *****************
-    // 当前座标
-    public Vector3Int CurPos
-    {
-        get => m_curPos;
-        set => m_curPos = value;
-    }
     // 是否放置
     public bool IsPlace
     {
@@ -57,9 +51,6 @@ public abstract class BaseBuild : BaseObstacle
     
     // 数据
     protected BuildData m_buildData;
-
-    // 当前位置
-    protected Vector3Int m_curPos;
 
     // 未放置状态的上一步位置
     protected Vector3 m_lastPos;
@@ -200,6 +191,11 @@ public abstract class BaseBuild : BaseObstacle
     public Line GetLine(BaseObstacle obs)
     {
         return m_lineDic[obs];
+    }
+
+    public Dictionary<BaseObstacle,Line> GetLines()
+    {
+        return m_lineDic;
     }
     
     /// <summary>

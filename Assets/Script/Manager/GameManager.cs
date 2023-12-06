@@ -33,6 +33,93 @@ public class GameManager : MonoBehaviour
     
     // 建筑数据
     private Dictionary<string, BuildData> m_BuildData;
+    
+    
+    // ************************ 邻接矩阵 ********************
+    
+    // 邻接表
+    private Vector3Int[] from = new Vector3Int[40000];
+    // 邻接矩阵
+    private Line[,] table = new Line[10000,10000];
+    // 邻接表长度
+    private int length = 0;
+    // 度的数量
+    private int degree = 0;
+    
+    // 注册邻接表
+    public void RegisterFrom(Vector3Int v3i)
+    {
+        if (!from.Contains(v3i)) from[length++] = v3i;
+    }
+    
+    // 注册邻接矩阵
+    public void RegisterTable(Vector3Int sv3i, Vector3Int ev3i,Line line)
+    {
+        if (!from.Contains(sv3i)) from[length++] = sv3i;
+        var start = Array.IndexOf(from,sv3i);
+        var end = Array.IndexOf(from,ev3i);
+        if (table == null) return;
+        table[start, end] = line;
+        table[end, start] = line;
+        degree++;
+    }
+    
+    // 删除节点
+    public void RemoveNode(Vector3Int v3i)
+    {
+        if (!from.Contains(v3i)) return;
+        var node = Array.IndexOf(from, v3i);
+        for (var i = 0; i < length; i++)
+        {
+            if (i == node) continue;
+            Destroy(table[node, i]);
+            Destroy(table[i,node]);
+            table[node, i] = null;
+            table[i, node] = null;
+        }
+        length--;
+    }
+    
+    // 遍历矩阵
+    public List<Vector3Int> ForEachTable(Vector3Int v3i, Resource resource)
+    {
+        //查找过的数据
+        var find = new List<Vector3Int>();
+        return StartForEachTable(Array.IndexOf(from, v3i), resource,find);
+    }
+    
+    // 开始遍历
+    private List<Vector3Int> StartForEachTable(int index, Resource resource,List<Vector3Int> find)
+    {
+        if (find.Contains(from[index])) return null;
+        for (var i = 0; i < length; i++)
+        {
+            if (i == index) continue;
+            if (table[index, i] == null) continue;
+            Debug.Log(from[i]);
+            if (m_BuildList.TryGetValue(from[i], out var build))
+            {
+                find.Add(from[i]);
+                var isHave = build.IsHave(resource);
+                Debug.Log($"{build.name},{isHave}");
+                if (isHave)
+                {
+                    var vector3Ints = new List<Vector3Int> { from[i] };
+                    return vector3Ints;
+                }
+                else
+                {
+                    var vector3Ints = StartForEachTable(i, resource, find);
+                    if (vector3Ints == null) continue;
+                    vector3Ints.Add(from[i]);
+                    return vector3Ints;
+                }
+            }
+        }
+        return null;
+    }
+    
+    // *****************************************************
 
     private void Awake()
     {
@@ -124,16 +211,37 @@ public class GameManager : MonoBehaviour
     /// <param name="build">建筑物</param>
     public void AddBuild(Vector3Int cellPos, GameObject build)
     {
-        if (m_BuildList == null)
-        {
-            m_BuildList = new Dictionary<Vector3Int, BaseBuild>();
-        }
+        m_BuildList ??= new Dictionary<Vector3Int, BaseBuild>();
         var baseBuild = build.GetComponent<BaseBuild>();
+        // 初始化建筑被放置时的一些属性
         baseBuild.CurPos = cellPos;
         baseBuild.IsPlace = true;
+        // 注册邻接表
+        RegisterFrom(baseBuild.CurPos);
+        // 邻接矩阵中注册
+        var dictionary = baseBuild.GetLines();
+        foreach (var keyValuePair in dictionary)
+        {
+            RegisterTable(baseBuild.CurPos,keyValuePair.Key.CurPos,keyValuePair.Value);
+        }
         m_BuildList.Add(cellPos, baseBuild);
     }
-
+    
+    /// <summary>
+    /// 添加游戏对象进入字典中保存，方便下次批量调用
+    /// </summary>
+    /// <param name="build">建筑物</param>
+    public void AddBuild(GameObject build)
+    {
+        m_Builds ??= new Dictionary<Type, List<BaseBuild>>();
+        var baseBuild = build.GetComponent<BaseBuild>();
+        if (!m_Builds.ContainsKey(baseBuild.GetType()))
+        {
+            m_Builds.Add(baseBuild.GetType(), new List<BaseBuild>());
+        }
+        m_Builds[baseBuild.GetType()].Add(baseBuild);
+    }
+    
     /// <summary>
     /// 返回指定坐标的建筑
     /// </summary>
@@ -148,26 +256,6 @@ public class GameManager : MonoBehaviour
 
         return m_BuildList.TryGetValue(cellPos, out var build) ? build : null;
     }
-
-    /// <summary>
-    /// 添加游戏对象进入字典中保存，方便下次批量调用
-    /// </summary>
-    /// <param name="build">建筑物</param>
-    public void AddBuild(GameObject build)
-    {
-        if (m_Builds == null)
-        {
-            m_Builds = new Dictionary<Type, List<BaseBuild>>();
-        }
-
-        var baseBuild = build.GetComponent<BaseBuild>();
-        if (!m_Builds.ContainsKey(baseBuild.GetType()))
-        {
-            m_Builds.Add(baseBuild.GetType(), new List<BaseBuild>());
-        }
-        m_Builds[baseBuild.GetType()].Add(baseBuild);
-    }
-    
     /// <summary>
     /// 获取指定类型的所有建筑
     /// </summary>
@@ -202,7 +290,6 @@ public class GameManager : MonoBehaviour
             m_Builds[baseBuild.GetType()].Remove(baseBuild);
         }
     }
-    
     
     /// <summary>
     /// 获取障碍

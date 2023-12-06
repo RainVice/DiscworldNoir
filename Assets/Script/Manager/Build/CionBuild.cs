@@ -45,4 +45,9 @@ public class CionBuild : BaseProduce
     {
         return Resource.Crystal;
     }
+
+    public override bool IsHave(Resource resource)
+    {
+        return resource.HasFlag(Resource.Crystal) && GetNum(Resource.Crystal) > 0;
+    }
 }

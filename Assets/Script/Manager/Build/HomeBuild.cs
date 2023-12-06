@@ -22,9 +22,23 @@ public class HomeBuild : BaseAttack
     {
         m_CrystalCount+=num;
     }
-
+    
     public override Resource IsNeed()
     {
         return Resource.Crystal | Resource.Iron | Resource.Tree | Resource.Bullet;
+    }
+
+    // 向外询问一下是否有物资
+    protected override void OnWay()
+    {
+        base.OnWay();
+        foreach (Resource value in Enum.GetValues(typeof(Resource)))
+        {
+            if (value is Resource.All or Resource.None) continue;
+            if (IsNeed().HasFlag(value))
+            {
+                var forEachTable = GameManager.Instance.ForEachTable(CurPos, value);
+            }
+        }
     }
 }
