@@ -39,7 +39,7 @@ public class HomeBuild : BaseAttack
             if (IsNeed().HasFlag(value))
             {
                 BaseBuild baseBuild;
-                var forEachTable = GameManager.Instance.ForEachTable(CurPos, value,out baseBuild);
+                var forEachTable = GameManager.Instance.FindOneWay(CurPos, value,out baseBuild);
                 if (forEachTable != null)
                 {
                     GameManager.Instance.Send(forEachTable,CurPos, () =>
@@ -48,6 +48,18 @@ public class HomeBuild : BaseAttack
                         ChangeNum(value);
                     });
                 }
+
+                // var findAllWay = GameManager.Instance.FindAllWay(CurPos, value, out List<BaseBuild> baseBuilds);
+                // for (var i = 0; i < findAllWay.Count; i++)
+                // {
+                //     var vector3Ints = findAllWay[i];
+                //     var baseBuild = baseBuilds[i];
+                //     GameManager.Instance.Send(vector3Ints,CurPos, () =>
+                //     {
+                //         baseBuild.ChangeNum(value, -1);
+                //         ChangeNum(value);
+                //     });
+                // }
             }
         }
     }

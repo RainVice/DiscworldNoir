@@ -85,16 +85,17 @@ public class GameManager : MonoBehaviour
             Destroy(table[i,node]);
             table[node, i] = null;
             table[i, node] = null;
+            degree--;
         }
         length--;
     }
     
     // 遍历矩阵
-    public List<Vector3Int> ForEachTable(Vector3Int v3i, Resource resource, out BaseBuild baseBuild)
+    public List<Vector3Int> FindOneWay(Vector3Int v3i, Resource resource, out BaseBuild baseBuild)
     {
-        //查找过的数据
+        // 查找过的数据
         var find = new List<Vector3Int>();
-        var vector3Ints = StartForEachTable(Array.IndexOf(from, v3i), resource,find);
+        var vector3Ints = StartFindOneWay(Array.IndexOf(from, v3i), resource,find);
         if (vector3Ints == null)
         {
             baseBuild = null;
@@ -105,7 +106,7 @@ public class GameManager : MonoBehaviour
     }
     
     // 开始遍历
-    private List<Vector3Int> StartForEachTable(int index, Resource resource,List<Vector3Int> find)
+    private List<Vector3Int> StartFindOneWay(int index, Resource resource,List<Vector3Int> find)
     {
         if (find.Contains(from[index])) return null;
         for (var i = 0; i < length; i++)
@@ -123,12 +124,33 @@ public class GameManager : MonoBehaviour
                 }
                 else
                 {
-                    var vector3Ints = StartForEachTable(i, resource, find);
+                    if (GetBuild(from[i]) is not WayBuild) continue;
+                    var vector3Ints = StartFindOneWay(i, resource, find);
                     if (vector3Ints == null) continue;
                     vector3Ints.Add(from[i]);
                     return vector3Ints;
                 }
             }
+        }
+        return null;
+    }
+    
+    // 查找所有线路
+    public List<List<Vector3Int>> FindAllWay(Vector3Int v3i, Resource resource, out List<BaseBuild> baseBuilds)
+    {
+        var allPaths = new List<List<Vector3Int>>();
+        var visited = new List<Vector3Int>();
+        StartFindAllWay(Array.IndexOf(from, v3i), resource, visited, allPaths);
+        baseBuilds = allPaths.Select(vector3Ints => GetBuild(vector3Ints[0])).ToList();
+        return allPaths;
+    }
+
+    // 开始遍历所有线路
+    private List<Vector3Int> StartFindAllWay(int index, Resource resource, List<Vector3Int> visited, List<List<Vector3Int>> allPaths)
+    {
+        for (int i = 0; i < length; i++)
+        {
+            // todo 查找所有的线路
         }
         return null;
     }
