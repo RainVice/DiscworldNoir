@@ -26,6 +26,6 @@ namespace Effect
         /// <param name="delay"></param>
         /// <returns></returns>
         public static BaseEffect SlideTFsTo(this Transform transform, List<Vector3> points,float time = 1f,float delay = 0f) => 
-            new TFEffects(transform,points,time * points.Count,delay);
+            new TFEffects(transform,points,time,delay);
     }
 }

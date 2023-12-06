@@ -8,6 +8,9 @@ namespace Effect
         protected Vector3 reSetPosition;
         private Transform transform;
         private List<Vector3> points;
+        private float timeTemp;
+        private int next;
+        
         public TFEffects(Transform transform, List<Vector3> points, float time, float delayTime)
         {
             reSetPosition = transform.position;
@@ -21,10 +24,14 @@ namespace Effect
         public override void Do()
         {
             timer += Time.deltaTime;
-            var agv = (int)(timer / (time / (points.Count - 1)));
-            transform.position = Vector3.Lerp(points[agv], points[agv + 1], timer / time);
-            if (timer >= time)
-                isDone = true;
+            timeTemp += Time.deltaTime;
+            transform.position = Vector3.Lerp(points[next], points[next + 1], timeTemp / time);
+            if (timeTemp >= time)
+            {
+                timeTemp = 0;
+                next++;
+            }
+            if (timer >= time * (points.Count - 1)) isDone = true;
         }
     }
 }

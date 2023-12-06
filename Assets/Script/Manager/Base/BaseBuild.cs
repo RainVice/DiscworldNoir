@@ -47,7 +47,6 @@ public abstract class BaseBuild : BaseObstacle
     protected Dictionary<Type, List<BaseObstacle>> obstacles = new();
     // 库存物资
     protected Dictionary<Resource, int> inventory = new();
-    // protected Dictionary<Type, int> inventory = new();
     
     // 数据
     protected BuildData m_buildData;
@@ -57,9 +56,6 @@ public abstract class BaseBuild : BaseObstacle
 
     // 线条集合
     protected Dictionary<BaseObstacle,Line> m_lineDic = new();
-    
-    // 链接者
-    protected List<BaseBuild> m_connecter = new();
 
     protected virtual void Awake()
     {
@@ -79,11 +75,6 @@ public abstract class BaseBuild : BaseObstacle
 
     protected virtual void OnDestroy()
     {
-        foreach (var baseBuild in m_connecter)
-        {
-            baseBuild.DestroyLine(this);
-        }
-
         DestroyPre();
     }
 
@@ -169,12 +160,6 @@ public abstract class BaseBuild : BaseObstacle
     protected void AddLine(BaseObstacle end)
     {
         m_lineDic.Add(end,Line.DrawLine(transform.position, end.transform.position));
-
-        if (end is BaseBuild baseBuild)
-        {
-            m_connecter.Add(baseBuild);
-        }
-        
         if (!obstacles.ContainsKey(end.GetType()))
         {
             obstacles.Add(end.GetType(), new List<BaseObstacle>());
@@ -207,7 +192,6 @@ public abstract class BaseBuild : BaseObstacle
         {
             Destroy(line.Value.gameObject);
         }
-        m_connecter.Clear();
         m_lineDic.Clear();
         obstacles.Clear();
     }

@@ -47,9 +47,9 @@ public class GameManager : MonoBehaviour
     // ************************ 邻接矩阵 ********************
     
     // 邻接表
-    private Vector3Int[] from = new Vector3Int[1000];
+    private Vector3Int[] from = new Vector3Int[2000];
     // 邻接矩阵
-    private Line[,] table = new Line[1000,1000];
+    private Line[,] table = new Line[2000,2000];
     // 邻接表长度
     private int length = 0;
     // 度的数量
@@ -365,7 +365,11 @@ public class GameManager : MonoBehaviour
         cellPos.Add(end);
         var instantiate = Instantiate(CirclePrefab,cellPos[0],Quaternion.identity);
         var vector3S = cellPos.Select(vector3Int => m_Grid.CellToWorld(vector3Int)).ToList();
-        this.CreateEffect().AddEffect(instantiate.transform.SlideTFsTo(vector3S)).Play(onFinish);
+        this.CreateEffect().AddEffect(instantiate.transform.SlideTFsTo(vector3S)).Play(() =>
+        {
+            Destroy(instantiate);
+            onFinish.Invoke();
+        });
     }
     
     /// <summary>
