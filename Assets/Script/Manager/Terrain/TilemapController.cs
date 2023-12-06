@@ -213,14 +213,5 @@ public class TilemapController : MonoBehaviour
         }
     }
     
-    /// <summary>
-    /// LayerPosition 转 Vector3Int
-    /// </summary>
-    /// <param name="lp"></param>
-    /// <returns></returns>
-    public Vector3Int LpToVector3Int(LayerPosition lp)
-    {
-        return m_Grid.WorldToCell(lp.GetVector3());
-    }
     
 }

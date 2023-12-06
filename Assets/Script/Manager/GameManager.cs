@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DB;
+using Effect;
 using UnityEditor.Scripting;
 using UnityEngine;
 
@@ -11,15 +12,22 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
 
+    #region 属性
     // ************** 属性 *****************
     // 单例
     public static GameManager Instance { get; private set; }
     // 当前选择的一个物体
     public GameObject CurSelectedObject { get; set; }
+    #endregion
     
+    #region 引用
     // *************** 引用 *****************
     public Grid m_Grid;
     public GameObject LinePrefab;
+    public GameObject CirclePrefab;
+    #endregion
+    
+    #region 变量
     
     // *************** 变量 *****************
     // 建筑集合分类
@@ -33,14 +41,15 @@ public class GameManager : MonoBehaviour
     
     // 建筑数据
     private Dictionary<string, BuildData> m_BuildData;
-    
-    
+    #endregion
+
+    #region 邻接矩阵
     // ************************ 邻接矩阵 ********************
     
     // 邻接表
-    private Vector3Int[] from = new Vector3Int[40000];
+    private Vector3Int[] from = new Vector3Int[1000];
     // 邻接矩阵
-    private Line[,] table = new Line[10000,10000];
+    private Line[,] table = new Line[1000,1000];
     // 邻接表长度
     private int length = 0;
     // 度的数量
@@ -81,11 +90,18 @@ public class GameManager : MonoBehaviour
     }
     
     // 遍历矩阵
-    public List<Vector3Int> ForEachTable(Vector3Int v3i, Resource resource)
+    public List<Vector3Int> ForEachTable(Vector3Int v3i, Resource resource, out BaseBuild baseBuild)
     {
         //查找过的数据
         var find = new List<Vector3Int>();
-        return StartForEachTable(Array.IndexOf(from, v3i), resource,find);
+        var vector3Ints = StartForEachTable(Array.IndexOf(from, v3i), resource,find);
+        if (vector3Ints == null)
+        {
+            baseBuild = null;
+            return null;
+        }
+        baseBuild = GetBuild(vector3Ints[0]);
+        return vector3Ints;
     }
     
     // 开始遍历
@@ -94,14 +110,12 @@ public class GameManager : MonoBehaviour
         if (find.Contains(from[index])) return null;
         for (var i = 0; i < length; i++)
         {
+            find.Add(from[index]);
             if (i == index) continue;
             if (table[index, i] == null) continue;
-            Debug.Log(from[i]);
             if (m_BuildList.TryGetValue(from[i], out var build))
             {
-                find.Add(from[i]);
                 var isHave = build.IsHave(resource);
-                Debug.Log($"{build.name},{isHave}");
                 if (isHave)
                 {
                     var vector3Ints = new List<Vector3Int> { from[i] };
@@ -121,6 +135,8 @@ public class GameManager : MonoBehaviour
     
     // *****************************************************
 
+    #endregion
+    
     private void Awake()
     {
         Instance = this;
@@ -128,8 +144,9 @@ public class GameManager : MonoBehaviour
         InitBuilds();
     }
 
+
     /// <summary>
-    /// 获取建筑数据
+    /// 从数据库中读取建筑数据
     /// </summary>
     private void InitBuilds()
     {
@@ -140,6 +157,8 @@ public class GameManager : MonoBehaviour
             m_BuildData.Add(buildData.buildName, buildData);
         });
     }
+    
+    #region 建筑物
     
     /// <summary>
     /// 获取建筑数据
@@ -203,7 +222,6 @@ public class GameManager : MonoBehaviour
         }
         return null;
     }
-
     /// <summary>
     /// 添加建筑
     /// </summary>
@@ -304,6 +322,10 @@ public class GameManager : MonoBehaviour
         return baseTerrain != null ? baseTerrain : null;
     }
     
+    #endregion
+    
+    #region 功能
+    
     /// <summary>
     /// 扫描附近物品
     /// </summary>
@@ -321,6 +343,42 @@ public class GameManager : MonoBehaviour
             }
         });
     }
+    
+    /// <summary>
+    /// Vector3Int 转 Vector3
+    /// </summary>
+    /// <param name="vector3Int"></param>
+    /// <returns></returns>
+    public Vector3 V3IToV3(Vector3Int vector3Int)
+    {
+        return m_Grid.CellToWorld(vector3Int);
+    }
+    
+    
+    /// <summary>
+    /// 发送物品
+    /// </summary>
+    /// <param name="cellPos"> tile 坐标</param>
+    /// <param name="onFinish"> 完成事件</param>
+    public void Send(List<Vector3Int> cellPos,Vector3Int end,Action onFinish)
+    {
+        cellPos.Add(end);
+        var instantiate = Instantiate(CirclePrefab,cellPos[0],Quaternion.identity);
+        var vector3S = cellPos.Select(vector3Int => m_Grid.CellToWorld(vector3Int)).ToList();
+        this.CreateEffect().AddEffect(instantiate.transform.SlideTFsTo(vector3S)).Play(onFinish);
+    }
+    
+    /// <summary>
+    /// LayerPosition 转 Vector3Int
+    /// </summary>
+    /// <param name="lp"></param>
+    /// <returns></returns>
+    public Vector3Int LpToVector3Int(LayerPosition lp)
+    {
+        return m_Grid.WorldToCell(lp.GetVector3());
+    }
+    
+    #endregion
     
     
     

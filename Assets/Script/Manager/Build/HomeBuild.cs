@@ -37,7 +37,16 @@ public class HomeBuild : BaseAttack
             if (value is Resource.All or Resource.None) continue;
             if (IsNeed().HasFlag(value))
             {
-                var forEachTable = GameManager.Instance.ForEachTable(CurPos, value);
+                BaseBuild baseBuild;
+                var forEachTable = GameManager.Instance.ForEachTable(CurPos, value,out baseBuild);
+                if (forEachTable != null)
+                {
+                    GameManager.Instance.Send(forEachTable,CurPos, () =>
+                    {
+                        baseBuild.ChangeNum(value, -1);
+                        ChangeNum(value);
+                    });
+                }
             }
         }
     }

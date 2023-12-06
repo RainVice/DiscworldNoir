@@ -28,6 +28,18 @@ namespace Effect
             mono.StartCoroutine(Run());
             finishCallback = action;
         }
+        
+        
+        /// <summary>
+        /// 添加完成回调
+        /// </summary>
+        /// <param name="action"></param>
+        public void AddFinishCallback(Action action)
+        {
+            finishCallback += action;
+        }
+        
+        
 
         /// <summary>
         /// 添加特效，有同类型的特效则覆盖

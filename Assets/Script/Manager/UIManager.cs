@@ -13,7 +13,6 @@ public class UIManager : MonoBehaviour
     public Tip tip;
     
     // *************** 变量 *****************
-
     private void Awake()
     {
         Instance = this;

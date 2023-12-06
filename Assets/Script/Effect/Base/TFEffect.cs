@@ -24,7 +24,7 @@ namespace Effect
         {
             timer += Time.deltaTime;
             transform.position = Vector3.Lerp(start, end, timer / time);
-            if (timer >= 1)
+            if (timer >= time)
                 isDone = true;
         }
     }
