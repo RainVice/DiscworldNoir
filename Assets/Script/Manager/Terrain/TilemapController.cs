@@ -140,11 +140,17 @@ public class TilemapController : MonoBehaviour
     /// </summary>
     private void OnMouseToTileListener()
     {
-        // 如果没有预选中物体，则直接返回
-        if (!GameManager.Instance.CurSelectedObject) return;
+        
         // 获取坐标
         var mousePos = m_Camera.ScreenToWorldPoint(Input.mousePosition);
         var cellPos = m_Tilemap.WorldToCell(mousePos);
+        
+        // 判断是否放置了物体
+        var baseBuild = GameManager.Instance.GetBuild(cellPos);
+        
+
+        // 如果没有预选中物体，则直接返回
+        if (!GameManager.Instance.CurSelectedObject) return;
         // 如果选择的预制体与 GameManager 的不同，弃用当前的
         if (m_CurSelectedObject!= GameManager.Instance.CurSelectedObject)
         {

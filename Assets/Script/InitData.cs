@@ -54,7 +54,7 @@ public class InitData : MonoBehaviour
                 price = 10,
                 attack = 10,
                 productionSpeed = 0,
-                waySpeed = 0,
+                waySpeed = 1,
                 description = "用于攻击敌人，需要弹药工厂为其制造弹药"
             },
             new BuildData

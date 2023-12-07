@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DB;
 using Effect;
-using Script.Utility;
 using Unity.VisualScripting;
-using UnityEditor.Scripting;
 using UnityEngine;
 
 /// <summary>
@@ -178,7 +176,6 @@ public class GameManager : MonoBehaviour
                         {
                             allPaths[j] = vector3Ints;
                         }
-                        break;
                     }
                     if (!flag) continue;
                     allPaths.Add(vector3Ints);
