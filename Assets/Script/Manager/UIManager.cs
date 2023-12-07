@@ -12,6 +12,8 @@ public class UIManager : MonoBehaviour
     public GameObject toastPrefab;
     // 提示
     public Tip tip;
+    // 信息面板
+    public GameObject infoPanel;
     
     // *************** 变量 *****************
     private void Awake()
@@ -37,6 +39,16 @@ public class UIManager : MonoBehaviour
     public void CloseTip()
     {
         tip.Close();
+    }
+
+    public void ShowInfo()
+    {
+        infoPanel.SetActive(true);
+    }
+
+    public void HideInfo()
+    {
+        infoPanel.SetActive(false);
     }
     
 }

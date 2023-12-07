@@ -75,7 +75,7 @@ public abstract class BaseBuild : BaseObstacle
 
     protected virtual void OnDestroy()
     {
-        DestroyPre();
+        GameManager.Instance.RemoveNode(CurPos);
     }
 
     protected virtual void FixedUpdate()
@@ -234,7 +234,6 @@ public abstract class BaseBuild : BaseObstacle
         return inventory.TryGetValue(resource, out var num) ? num : 0;
     }
     
-    
     /// <summary>
     /// 询问是否有指定物质
     /// </summary>
@@ -245,5 +244,6 @@ public abstract class BaseBuild : BaseObstacle
         return false;
     }
     
+    public virtual void Upgrade() { }
     
 }

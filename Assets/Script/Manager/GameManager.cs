@@ -81,8 +81,8 @@ public class GameManager : MonoBehaviour
         for (var i = 0; i < length; i++)
         {
             if (i == node) continue;
-            Destroy(table[node, i]);
-            Destroy(table[i,node]);
+            if (!table[node, i].IsDestroyed()) Destroy(table[node, i]);
+            if (!table[i, node].IsDestroyed()) Destroy(table[i, node]);
             table[node, i] = null;
             table[i, node] = null;
             degree--;

@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 3632523238577855979}
   - component: {fileID: 1566100314497133083}
   - component: {fileID: 5728151009582312437}
-  m_Layer: 0
+  - component: {fileID: -1547736734273041934}
+  m_Layer: 7
   m_Name: Harvester
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98,6 +99,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0b064aabf7f40dab82684bf44e6d7f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!58 &-1547736734273041934
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 393076007131076409}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.50000006
 --- !u!1 &3669201668031190067
 GameObject:
   m_ObjectHideFlags: 0
@@ -108,7 +125,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5786681462770581819}
   - component: {fileID: 9006236748700110017}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}

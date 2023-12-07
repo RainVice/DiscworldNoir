@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// 大本营控制类
@@ -42,4 +43,9 @@ public class HomeBuild : BaseAttack
             }
         }
     }
+    
+    
+    
+    
+    
 }
