@@ -18,7 +18,7 @@ namespace DB
 
         private bool Do(IReadOnlyList<T> ts)
         {
-            if (ts == null) return false;
+            if (ts is null) return false;
             // 生成sql语句
             var sql = $"INSERT INTO {typeof(T).Name} VALUES ";
             for (var i = 0; i < ts.Count; i++)
@@ -39,7 +39,7 @@ namespace DB
 
         public override bool Do()
         {
-            if (t == null) return false;
+            if (t is null) return false;
             // 生成sql语句
             var sql = $"INSERT INTO {typeof(T).Name} VALUES ";
             sql += GenerateSqlValue(t);
@@ -63,7 +63,7 @@ namespace DB
                 }
                 else
                 {
-                    value = field.GetValue(data) == null ? "null" : field.GetValue(data).ToString();
+                    value = field.GetValue(data) is null ? "null" : field.GetValue(data).ToString();
                 }
                 temp += DBUtil.TypeToValue(field.FieldType, value);
                 if (i != fieldInfos.Length - 1)

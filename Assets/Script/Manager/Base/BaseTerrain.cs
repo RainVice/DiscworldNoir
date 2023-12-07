@@ -9,6 +9,15 @@ public abstract class BaseTerrain : BaseObstacle
     {
         m_obstacleType = ObstacleType.Terrain;
     }
+    /// <summary>
+    /// 询问是否需要传出物质
+    /// </summary>
+    /// <returns></returns>
+    public virtual Resource IsOut()
+    {
+        return Resource.None;
+    }
+
 }
 
 public enum TerrainType

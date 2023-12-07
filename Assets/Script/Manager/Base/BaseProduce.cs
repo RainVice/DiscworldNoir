@@ -37,26 +37,26 @@ public abstract class BaseProduce : BaseBuild
     /// </summary>
     protected virtual void OnProduce() { }
 
-    protected override void OnWay()
-    {
-        base.OnWay();
-        foreach (var baseObstacle in obstacles.Values.SelectMany(obstaclesValue => obstaclesValue))
-        {
-            if (baseObstacle is not BaseBuild baseBuild) continue;
-            var isNeed = baseBuild.IsNeed();
-            if (isNeed == Resource.None) continue;
-            foreach (Resource value in Enum.GetValues(typeof(Resource)))
-            {
-                if (!isNeed.HasFlag(value)) continue;
-                if (GetNum(value) > 0)
-                {
-                    GetLine(baseBuild).Push(true, () =>
-                    {
-                        ChangeNum(value,-1);
-                        baseBuild.ChangeNum(value);
-                    });
-                }
-            }
-        }
-    }
+    // protected override void OnWay()
+    // {
+    //     base.OnWay();
+    //     foreach (var baseObstacle in obstacles.Values.SelectMany(obstaclesValue => obstaclesValue))
+    //     {
+    //         if (baseObstacle is not BaseBuild baseBuild) continue;
+    //         var isNeed = baseBuild.IsNeed();
+    //         if (isNeed == Resource.None) continue;
+    //         foreach (Resource value in Enum.GetValues(typeof(Resource)))
+    //         {
+    //             if (!isNeed.HasFlag(value)) continue;
+    //             if (GetNum(value) > 0)
+    //             {
+    //                 GetLine(baseBuild).Push(true, () =>
+    //                 {
+    //                     ChangeNum(value,-1);
+    //                     baseBuild.ChangeNum(value);
+    //                 });
+    //             }
+    //         }
+    //     }
+    // }
 }

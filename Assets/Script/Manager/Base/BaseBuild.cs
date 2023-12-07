@@ -61,7 +61,7 @@ public abstract class BaseBuild : BaseObstacle
     {
         m_obstacleType = ObstacleType.Build;
         m_buildData = GameManager.Instance.GetBuildData(GetType().Name);
-        if (m_buildData == null) return;
+        if (m_buildData is null) return;
         CName = m_buildData.name;
         distance = m_buildData.distance;
         level = m_buildData.level;
@@ -235,6 +235,15 @@ public abstract class BaseBuild : BaseObstacle
     }
     
     
+    /// <summary>
+    /// 询问是否有指定物质
+    /// </summary>
+    /// <param name="resource"></param>
+    /// <returns></returns>
+    public virtual bool IsHave(Resource resource)
+    {
+        return false;
+    }
     
     
 }

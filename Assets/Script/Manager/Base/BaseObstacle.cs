@@ -19,26 +19,6 @@ public abstract class BaseObstacle  : MonoBehaviour
     protected ObstacleType m_obstacleType;
     
     /// <summary>
-    /// 询问是否需要传出物质
-    /// </summary>
-    /// <returns></returns>
-    public virtual Resource IsOut()
-    {
-        return Resource.None;
-    }
-
-
-    /// <summary>
-    /// 询问是否有指定物质
-    /// </summary>
-    /// <param name="resource"></param>
-    /// <returns></returns>
-    public virtual bool IsHave(Resource resource)
-    {
-        return false;
-    }
-    
-    /// <summary>
     /// 询问是否需要物质
     /// </summary>
     /// <returns></returns>

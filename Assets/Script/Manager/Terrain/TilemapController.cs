@@ -21,6 +21,8 @@ public class TilemapController : MonoBehaviour
     // ****************** 变量 *****************
     // 鼠标在上一帧的位置
     private Vector3 m_PreMousePos = Vector3.zero;
+    // 当前鼠标坐标
+    private Vector3Int m_CurVector3Int = Vector3Int.zero;
     // 上一步滑过的坐标
     private Vector3Int m_PreVector3Int = Vector3Int.zero;
     // 选择的预制体
@@ -107,7 +109,7 @@ public class TilemapController : MonoBehaviour
             // 如果没有预选中物体，则直接返回
             if (!m_InstanceGameObject) return;
             // 如果放置的地方有物体则返回
-            if (GameManager.Instance.GetBuild(m_PreVector3Int)) return;
+            if (GameManager.Instance.GetBuild(m_Grid.WorldToCell(m_PreMousePos))) return;
             // 判断是否可以放置，如果不可以就直接销毁返回
             if (!m_InstanceGameObject.GetComponent<BaseBuild>().CanPlace())
             {
@@ -117,7 +119,7 @@ public class TilemapController : MonoBehaviour
             }
             // 如果选中物体则放置
             GameManager.Instance.AddBuild(m_InstanceGameObject);
-            GameManager.Instance.AddBuild(m_PreVector3Int, m_InstanceGameObject);
+            GameManager.Instance.AddBuild(m_Grid.WorldToCell(m_PreMousePos), m_InstanceGameObject);
             // 修改透明度
             if (!m_SpriteRenderer) m_SpriteRenderer = m_InstanceGameObject.GetComponent<SpriteRenderer>();
             var color = m_SpriteRenderer.color;
@@ -158,6 +160,7 @@ public class TilemapController : MonoBehaviour
         // 如果坐标改变，则触发事件
         if (m_PreVector3Int != cellPos && m_Tilemap.HasTile(cellPos))
         {
+            m_CurVector3Int = cellPos;
             OnMouseExitTile(m_PreVector3Int);
             OnMouseEnterTile(cellPos);
             m_PreVector3Int = cellPos;

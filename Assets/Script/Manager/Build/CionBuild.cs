@@ -10,11 +10,11 @@ public class CionBuild : BaseProduce
         {
             foreach (var baseObstacle in obstaclesValue)
             {
-                if (baseObstacle is not BaseTerrain) continue;
-                var isOut = baseObstacle.IsOut();
+                if (baseObstacle is not BaseTerrain baseTerrain) continue;
+                var isOut = baseTerrain.IsOut();
                 if (isOut.HasFlag(Resource.Crystal))
                 {
-                    GetLine(baseObstacle).Push(false, () =>
+                    GetLine(baseTerrain).Push(false, () =>
                     {
                         ChangeNum(isOut);
                     });
@@ -40,10 +40,6 @@ public class CionBuild : BaseProduce
     public override bool CanPlace()
     {
         return obstacles.ContainsKey(typeof(CrystalTerrain));
-    }
-    public override Resource IsOut()
-    {
-        return Resource.Crystal;
     }
 
     public override bool IsHave(Resource resource)

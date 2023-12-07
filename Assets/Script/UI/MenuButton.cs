@@ -110,7 +110,7 @@ public class MenuButton : MonoBehaviour
         if (eventData is not PointerEventData pointerEventData) return;
         var go = pointerEventData.pointerCurrentRaycast.gameObject;
         var data = GameManager.Instance.GetBuildDataByFuzzy(go.name);
-        if (data!= null)
+        if (data is not null)
         {
             UIManager.Instance.ShowTip(data.ToString());
         }

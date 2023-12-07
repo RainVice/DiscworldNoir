@@ -13,5 +13,8 @@ public enum BuildType
     Production = 4,
 
     // 运输
-    Way = 8
+    Way = 8,
+    
+    // 制造
+    Maker = 16
 }

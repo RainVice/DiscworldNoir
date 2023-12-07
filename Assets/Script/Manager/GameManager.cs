@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using DB;
 using Effect;
+using Script.Utility;
+using Unity.VisualScripting;
 using UnityEditor.Scripting;
 using UnityEngine;
 
@@ -67,7 +69,7 @@ public class GameManager : MonoBehaviour
         if (!from.Contains(sv3i)) from[length++] = sv3i;
         var start = Array.IndexOf(from,sv3i);
         var end = Array.IndexOf(from,ev3i);
-        if (table == null) return;
+        if (table is null) return;
         table[start, end] = line;
         table[end, start] = line;
         degree++;
@@ -94,9 +96,9 @@ public class GameManager : MonoBehaviour
     public List<Vector3Int> FindOneWay(Vector3Int v3i, Resource resource, out BaseBuild baseBuild)
     {
         // 查找过的数据
-        var find = new List<Vector3Int>();
+        var find = new HashSet<Vector3Int>();
         var vector3Ints = StartFindOneWay(Array.IndexOf(from, v3i), resource,find);
-        if (vector3Ints == null)
+        if (vector3Ints is null)
         {
             baseBuild = null;
             return null;
@@ -106,14 +108,14 @@ public class GameManager : MonoBehaviour
     }
     
     // 开始遍历
-    private List<Vector3Int> StartFindOneWay(int index, Resource resource,List<Vector3Int> find)
+    private List<Vector3Int> StartFindOneWay(int index, Resource resource,HashSet<Vector3Int> find)
     {
         if (find.Contains(from[index])) return null;
         for (var i = 0; i < length; i++)
         {
-            find.Add(from[index]);
             if (i == index) continue;
-            if (table[index, i] == null) continue;
+            if (table[index, i] is null) continue;
+            find.Add(from[index]);
             if (m_BuildList.TryGetValue(from[i], out var build))
             {
                 var isHave = build.IsHave(resource);
@@ -126,7 +128,7 @@ public class GameManager : MonoBehaviour
                 {
                     if (GetBuild(from[i]) is not WayBuild) continue;
                     var vector3Ints = StartFindOneWay(i, resource, find);
-                    if (vector3Ints == null) continue;
+                    if (vector3Ints is null) continue;
                     vector3Ints.Add(from[i]);
                     return vector3Ints;
                 }
@@ -146,13 +148,51 @@ public class GameManager : MonoBehaviour
     }
 
     // 开始遍历所有线路
-    private List<Vector3Int> StartFindAllWay(int index, Resource resource, List<Vector3Int> visited, List<List<Vector3Int>> allPaths)
+    private void StartFindAllWay(int index, Resource resource, List<Vector3Int> visited, List<List<Vector3Int>> allPaths)
     {
+        
+        if (visited.Contains(from[index])) return;
+        
         for (int i = 0; i < length; i++)
         {
-            // todo 查找所有的线路
+            if (i == index) continue;
+            if (table[index, i] is null || table[index,i].IsDestroyed()) continue;
+            if (visited.Contains(from[i])) continue;
+            if (m_BuildList.TryGetValue(from[i], out var build))
+            {
+                visited.Add(from[index]);
+                var isHave = build.IsHave(resource);
+                if (isHave)
+                {
+                    visited.Add(from[i]);
+                    var vector3Ints = new List<Vector3Int>(visited);
+                    visited.Remove(from[i]);
+                    vector3Ints.Reverse();
+                    var flag = true;
+                    for (var j = 0; j < allPaths.Count; j++)
+                    {
+                        var allPath = allPaths[j];
+                        if (allPath[0] != vector3Ints[0]) continue;
+                        flag = false;
+                        if (allPaths.Count > vector3Ints.Count)
+                        {
+                            allPaths[j] = vector3Ints;
+                        }
+                        break;
+                    }
+                    if (!flag) continue;
+                    allPaths.Add(vector3Ints);
+                }
+                else
+                {
+                    if (GetBuild(from[i]) is WayBuild)
+                    {
+                        StartFindAllWay(i,resource,visited,allPaths);
+                    }
+                }
+                visited.Remove(from[index]);
+            }
         }
-        return null;
     }
     
     // *****************************************************
@@ -189,7 +229,7 @@ public class GameManager : MonoBehaviour
     /// <returns></returns>
     public BuildData GetBuildData(string name)
     {
-        if (m_BuildData == null) return null;
+        if (m_BuildData is null) return null;
         return m_BuildData.TryGetValue(name, out var data) ? data : null;
     }
     
@@ -210,7 +250,7 @@ public class GameManager : MonoBehaviour
     /// <returns></returns>
     public bool HasTerrain(Vector3Int cellPos)
     {
-        if (m_TerrainList == null)
+        if (m_TerrainList is null)
         {
             m_TerrainList = new Dictionary<Vector3Int, BaseTerrain>();
         }
@@ -289,7 +329,7 @@ public class GameManager : MonoBehaviour
     /// <returns>建筑物</returns>
     public BaseBuild GetBuild(Vector3Int cellPos)
     {
-        if (m_BuildList == null)
+        if (m_BuildList is null)
         {
             return null;
         }
@@ -319,7 +359,7 @@ public class GameManager : MonoBehaviour
     /// <param name="build">建筑物</param>
     public void RemoveBuild(GameObject build)
     {
-        if (m_Builds == null)
+        if (m_Builds is null)
         {
             return;
         }
@@ -339,9 +379,9 @@ public class GameManager : MonoBehaviour
     public BaseObstacle GetObstacle(Vector3 vector3)
     {
         var baseBuild = GetBuild(m_Grid.LocalToCell(vector3));
-        if (baseBuild != null) return baseBuild;
+        if (baseBuild is not null) return baseBuild;
         var baseTerrain = GetTerrain<BaseTerrain>(m_Grid.LocalToCell(vector3));
-        return baseTerrain != null ? baseTerrain : null;
+        return baseTerrain;
     }
     
     #endregion
@@ -359,7 +399,7 @@ public class GameManager : MonoBehaviour
         layerPosition.Scan(curVector3, v3 =>
         {
             var baseObstacle = GetObstacle(v3);
-            if (baseObstacle != null)
+            if (baseObstacle is not null)
             {
                 action.Invoke(baseObstacle);
             }

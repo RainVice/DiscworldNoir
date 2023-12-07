@@ -22,7 +22,7 @@ public class UIManager : MonoBehaviour
     public void CreateToast(string msg = null)
     {
         var instantiate = Instantiate(toastPrefab, canvas.transform);
-        if (msg != null)
+        if (msg is not null)
         {
             instantiate.GetComponent<Toast>().Show(msg);
         }

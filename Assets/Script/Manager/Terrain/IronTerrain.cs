@@ -4,6 +4,10 @@
     {
         base.Awake();
         m_terrainType = TerrainType.Iron;
-        
+    }
+
+    public override Resource IsOut()
+    {
+        return Resource.Iron;
     }
 }

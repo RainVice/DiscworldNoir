@@ -13,7 +13,7 @@ namespace DB
         {
             get
             {
-                if (m_Instance == null)
+                if (m_Instance is null)
                 {
                     m_Instance = new DBUtil();
                 }
@@ -98,7 +98,7 @@ namespace DB
         /// <param name="type"></param>
         private void IsNull(Type type)
         {
-            if (m_Connection == null)
+            if (m_Connection is null)
             {
                 var path = Application.dataPath + "/DB/DiscworldNoir.db";
                 m_Connection = new SqliteConnection("Data Source=" + path);
@@ -111,7 +111,7 @@ namespace DB
             var result = command.ExecuteScalar();
 
             // 没有就创建表
-            if (result == null || result.ToString() != type.Name)
+            if (result is null || result.ToString() != type.Name)
             {
                 // 创建表
                 var sql = $"CREATE TABLE {type.Name} (";
@@ -122,7 +122,7 @@ namespace DB
                     if (!field.IsPublic) continue;
                     var typeToString = GetTypeToString(field.FieldType);
                     sql += $"{field.Name} {typeToString}";
-                    if (field.GetCustomAttribute<PrimaryKey>() != null)
+                    if (field.GetCustomAttribute<PrimaryKey>() is not null)
                     {
                         sql += " PRIMARY KEY";
                     }

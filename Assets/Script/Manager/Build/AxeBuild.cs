@@ -30,7 +30,7 @@ public class AxeBuild : BaseProduce
             switch (obstacle)
             {
                 case TreeTerrain :
-                case HomeBuild :
+                case HarvesterBuild :
                 case BaseWay :
                     AddLine(obstacle);
                     break;
@@ -41,8 +41,9 @@ public class AxeBuild : BaseProduce
     {
         return obstacles.ContainsKey(typeof(TreeTerrain));
     }
-    public override Resource IsOut()
+
+    public override bool IsHave(Resource resource)
     {
-        return Resource.Tree;
+        return resource.HasFlag(Resource.Tree) && GetNum(Resource.Tree) > 0;
     }
 }

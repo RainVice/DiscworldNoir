@@ -12,6 +12,11 @@ public enum Resource : uint
     Tree = 4,
     // 弹药
     Bullet = 8,
+    // 铁锭
+    Ingot = 16,
+    // 木材
+    Wood = 32,
+    
     
     //所有
     All = Crystal | Iron | Tree | Bullet,
