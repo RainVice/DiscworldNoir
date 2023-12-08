@@ -43,9 +43,25 @@ public class HomeBuild : BaseAttack
             }
         }
     }
-    
-    
-    
-    
-    
+
+    public override void ShowInfo()
+    {
+        UIManager.Instance.ShowInfo(this,transform.position,
+            m_buildData.name,
+            $"最大血量：{maxHp} > {(int)(maxHp * Constant.Upgrade(level))}\n" +
+            $"攻击力：{attack} > {attack * Constant.Upgrade(level)} \n" +
+            $"当前血量：{hp}");
+    }
+
+    public override void Remove()
+    {
+        UIManager.Instance.CreateToast("大本营不可移除");
+    }
+
+    public override void Upgrade()
+    {
+        base.Upgrade();
+        attack *= (int)Constant.Upgrade(level);
+        maxHp *= (int)Constant.Upgrade(level);
+    }
 }

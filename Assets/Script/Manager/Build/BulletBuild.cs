@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class BulletBuild : BaseMaker
 {
@@ -56,4 +57,30 @@ public class BulletBuild : BaseMaker
                 ) || 
                obstacles.ContainsKey(typeof(WayBuild));
     }
+    
+    
+    public override void ShowInfo()
+    {
+        UIManager.Instance.ShowInfo(this,transform.position,
+            m_buildData.name,
+            $"最大血量：{maxHp} > {(int)(maxHp * Constant.Upgrade(level))}\n" +
+            $"制造速度：{productionSpeed} > {productionSpeed * Constant.Upgrade(level)} \n" +
+            $"传输速度：{waySpeed} > {waySpeed * Constant.Upgrade(level)}\n" +
+            $"当前血量：{hp}" );
+    }
+
+    public override void Remove()
+    {
+        Destroy(gameObject);
+    }
+
+    public override void Upgrade()
+    {
+        base.Upgrade();
+        maxHp *= (int)Constant.Upgrade(level);
+        productionSpeed *= Constant.Upgrade(level);
+        waySpeed *= Constant.Upgrade(level);
+    }
+    
+    
 }

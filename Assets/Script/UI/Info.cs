@@ -14,15 +14,17 @@ public class Info : MonoBehaviour
 
     private BaseBuild baseBuild;
 
-    public void SetInfo(string name,string info)
+    public void SetInfo(BaseBuild baseBuild,string name,string info)
     {
+        this.baseBuild = baseBuild;
         this.name.text = name;
         this.info.text = info;
     }
     
     public void Remove()
     {
-        Destroy(baseBuild.gameObject);
+        baseBuild.Remove();
+        gameObject.SetActive(false);
     }
     
     public void Upgrade()

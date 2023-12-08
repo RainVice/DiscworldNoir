@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using UnityEngine;
 
 public class WayBuild : BaseWay
 {
@@ -24,4 +25,27 @@ public class WayBuild : BaseWay
     {
         return GetNum(resource) > 0;
     }
+    
+    public override void ShowInfo()
+    {
+        UIManager.Instance.ShowInfo(this,transform.position,
+            m_buildData.name,
+            $"最大血量：{maxHp} > {(int)(maxHp * Constant.Upgrade(level))}\n" +
+            $"传输速度：{waySpeed} > {waySpeed * Constant.Upgrade(level)}\n" +
+            $"当前血量：{hp}");
+    }
+
+    public override void Remove()
+    {
+        Destroy(gameObject);
+    }
+
+    public override void Upgrade()
+    {
+        base.Upgrade();
+        maxHp *= (int)Constant.Upgrade(level);
+        waySpeed *= Constant.Upgrade(level);
+    }
+    
+    
 }

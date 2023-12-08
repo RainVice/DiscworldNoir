@@ -41,8 +41,11 @@ public class UIManager : MonoBehaviour
         tip.Close();
     }
 
-    public void ShowInfo()
+    public void ShowInfo(BaseBuild baseBuild,Vector3 pos,string name,string msg)
     {
+        var component = infoPanel.GetComponent<Info>();
+        component.SetInfo(baseBuild,name,msg);
+        infoPanel.transform.position = pos;
         infoPanel.SetActive(true);
     }
 

@@ -32,14 +32,17 @@ public abstract class BaseBuild : BaseObstacle
     protected BuildType buildType;
     // 生命
     protected int hp;
+    // 最大生命
+    protected int maxHp;
     // 升级价格
     protected int upgradePrice;
     // 价格
     protected int price;
     // 运输速度
-    protected int waySpeed;
+    protected float waySpeed;
     // 运输计时
     private float m_wayTimer;
+    protected SpriteRenderer spriteRenderer;
 
     
     
@@ -61,6 +64,7 @@ public abstract class BaseBuild : BaseObstacle
     {
         m_obstacleType = ObstacleType.Build;
         m_buildData = GameManager.Instance.GetBuildData(GetType().Name);
+        spriteRenderer = GetComponent<SpriteRenderer>();
         if (m_buildData is null) return;
         CName = m_buildData.name;
         distance = m_buildData.distance;
@@ -68,6 +72,7 @@ public abstract class BaseBuild : BaseObstacle
         isPlace = m_buildData.isPlace;
         buildType = m_buildData.buildType;
         hp = m_buildData.hp;
+        maxHp = m_buildData.hp;
         upgradePrice = m_buildData.upgradePrice;
         price = m_buildData.price;
         waySpeed = m_buildData.waySpeed;
@@ -75,7 +80,9 @@ public abstract class BaseBuild : BaseObstacle
 
     protected virtual void OnDestroy()
     {
-        GameManager.Instance.RemoveNode(CurPos);
+        // 销毁上一次资源
+        DestroyPre();
+        GameManager.Instance.RemoveNode(this);
     }
 
     protected virtual void FixedUpdate()
@@ -94,13 +101,7 @@ public abstract class BaseBuild : BaseObstacle
         }
     }
 
-
-    public void DestroyLine(BaseObstacle baseObstacle)
-    {
-        var line = m_lineDic[baseObstacle];
-        m_lineDic.Remove(baseObstacle);
-        Destroy(line);
-    }
+    public virtual void ShowInfo() { }
 
     /// <summary>
     /// 运输事件
@@ -205,19 +206,6 @@ public abstract class BaseBuild : BaseObstacle
     {
         return true;
     }
-    
-    /// <summary>
-    /// 添加物资数量
-    /// </summary>
-    /// <param name="num"> 默认数量是 1</param>
-    public virtual void ChangeData(int num = 1){}
-
-    /// <summary>
-    /// 添加物资数量(指定类型)
-    /// </summary>
-    /// <param name="type"></param>
-    /// <param name="num"></param>
-    public virtual void ChangeData(Type type, int num = 1) { }
 
     /// <summary>
     /// 更改资源
@@ -243,7 +231,21 @@ public abstract class BaseBuild : BaseObstacle
     {
         return false;
     }
-    
-    public virtual void Upgrade() { }
-    
+
+    public virtual void Upgrade()
+    {
+        if (level >= 5)
+        {
+            UIManager.Instance.CreateToast("已经升级为最高等级");
+            return;
+        }
+        level++;
+        spriteRenderer.color = Constant.colors[level - 1];
+    }
+
+    public virtual void Remove()
+    {
+        Destroy(gameObject);
+    }
+
 }

@@ -104,12 +104,38 @@ public class TilemapController : MonoBehaviour
         {
             // 获取鼠标坐标
             m_PreMousePos = m_Camera.ScreenToWorldPoint(Input.mousePosition);
+            var cellPos = m_Grid.WorldToCell(m_PreMousePos);
+            var baseBuild = GameManager.Instance.GetBuild(cellPos);
+            // 如果没有预选中物体，则直接返回
+            if (!m_InstanceGameObject)
+            {
+                // 点击到已放置物品
+                if (baseBuild is not null && baseBuild.IsPlace)
+                {
+                    if (!EventSystem.current.IsPointerOverGameObject())
+                    {
+                        baseBuild.ShowInfo();
+                    }
+                }
+                else
+                {
+                    if (EventSystem.current.IsPointerOverGameObject() && 
+                        EventSystem.current.currentSelectedGameObject.layer == LayerMask.NameToLayer("Panel"))
+                    {
+                        
+                    }
+                    else
+                    {
+                        UIManager.Instance.HideInfo();
+                    }
+                    
+                }
+                return;
+            }
             // 鼠标在UI上直接返回
             if (EventSystem.current.IsPointerOverGameObject()) return;
-            // 如果没有预选中物体，则直接返回
-            if (!m_InstanceGameObject) return;
             // 如果放置的地方有物体则返回
-            if (GameManager.Instance.GetBuild(m_Grid.WorldToCell(m_PreMousePos))) return;
+            if (baseBuild) return;
             // 判断是否可以放置，如果不可以就直接销毁返回
             if (!m_InstanceGameObject.GetComponent<BaseBuild>().CanPlace())
             {
@@ -119,7 +145,7 @@ public class TilemapController : MonoBehaviour
             }
             // 如果选中物体则放置
             GameManager.Instance.AddBuild(m_InstanceGameObject);
-            GameManager.Instance.AddBuild(m_Grid.WorldToCell(m_PreMousePos), m_InstanceGameObject);
+            GameManager.Instance.AddBuild(cellPos, m_InstanceGameObject);
             // 修改透明度
             if (!m_SpriteRenderer) m_SpriteRenderer = m_InstanceGameObject.GetComponent<SpriteRenderer>();
             var color = m_SpriteRenderer.color;

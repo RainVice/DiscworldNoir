@@ -7,7 +7,7 @@ using UnityEngine;
 public abstract class BaseMaker : BaseBuild
 {
     // 生产速度
-    protected int productionSpeed;
+    protected float productionSpeed;
     // 生产计时
     private float m_productionTimer;
     

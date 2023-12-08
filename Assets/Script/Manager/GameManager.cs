@@ -47,9 +47,9 @@ public class GameManager : MonoBehaviour
     // ************************ 邻接矩阵 ********************
     
     // 邻接表
-    private Vector3Int[] from = new Vector3Int[2000];
+    private List<Vector3Int> from = new();
     // 邻接矩阵
-    private Line[,] table = new Line[2000,2000];
+    private Line[,] table = new Line[5000,5000];
     // 邻接表长度
     private int length = 0;
     // 度的数量
@@ -58,34 +58,52 @@ public class GameManager : MonoBehaviour
     // 注册邻接表
     public void RegisterFrom(Vector3Int v3i)
     {
-        if (!from.Contains(v3i)) from[length++] = v3i;
+        if (from.Contains(v3i)) return;
+        from.Add(v3i);
+        length++;
     }
     
     // 注册邻接矩阵
     public void RegisterTable(Vector3Int sv3i, Vector3Int ev3i,Line line)
     {
-        if (!from.Contains(sv3i)) from[length++] = sv3i;
-        var start = Array.IndexOf(from,sv3i);
-        var end = Array.IndexOf(from,ev3i);
+        RegisterFrom(sv3i);
+        var start = from.IndexOf(sv3i);
+        var end = from.IndexOf(ev3i);
+        Debug.Log($"RegisterTable:{start},{sv3i} |{end},{ev3i}");
         if (table is null) return;
         table[start, end] = line;
         table[end, start] = line;
-        degree++;
     }
     
     // 删除节点
-    public void RemoveNode(Vector3Int v3i)
+    public void RemoveNode(BaseBuild baseBuild)
     {
+        var v3i = baseBuild.CurPos;
+
+        if (m_Builds.ContainsKey(baseBuild.GetType()))
+        {
+            m_Builds[baseBuild.GetType()].Remove(baseBuild);
+        }
+        if (m_BuildList.ContainsKey(v3i))
+        {
+            m_BuildList.Remove(v3i);
+        }
+        
         if (!from.Contains(v3i)) return;
-        var node = Array.IndexOf(from, v3i);
+        var node = from.IndexOf(v3i);
         for (var i = 0; i < length; i++)
         {
             if (i == node) continue;
-            if (!table[node, i].IsDestroyed()) Destroy(table[node, i]);
-            if (!table[i, node].IsDestroyed()) Destroy(table[i, node]);
-            table[node, i] = null;
-            table[i, node] = null;
-            degree--;
+            if (table[node,i] is not null)
+            {
+                if (!table[node, i].IsDestroyed()) Destroy(table[node, i].gameObject);
+                table[node, i] = null;
+            }
+            if (table[i, node] is not null)
+            {
+                if (!table[i, node].IsDestroyed()) Destroy(table[i, node].gameObject);
+                table[i, node] = null;
+            }
         }
         length--;
     }
@@ -95,7 +113,7 @@ public class GameManager : MonoBehaviour
     {
         // 查找过的数据
         var find = new HashSet<Vector3Int>();
-        var vector3Ints = StartFindOneWay(Array.IndexOf(from, v3i), resource,find);
+        var vector3Ints = StartFindOneWay(from.IndexOf(v3i), resource,find);
         if (vector3Ints is null)
         {
             baseBuild = null;
@@ -140,7 +158,7 @@ public class GameManager : MonoBehaviour
     {
         var allPaths = new List<List<Vector3Int>>();
         var visited = new List<Vector3Int>();
-        StartFindAllWay(Array.IndexOf(from, v3i), resource, visited, allPaths);
+        StartFindAllWay(from.IndexOf(v3i), resource, visited, allPaths);
         baseBuilds = allPaths.Select(vector3Ints => GetBuild(vector3Ints[0])).ToList();
         return allPaths;
     }
