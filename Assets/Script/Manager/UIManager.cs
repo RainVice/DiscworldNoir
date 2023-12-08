@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class UIManager : MonoBehaviour
     public Tip tip;
     // 信息面板
     public GameObject infoPanel;
+    // 水晶数量
+    public Text crystalText;
     
     // *************** 变量 *****************
     private void Awake()
@@ -52,6 +55,11 @@ public class UIManager : MonoBehaviour
     public void HideInfo()
     {
         infoPanel.SetActive(false);
+    }
+    
+    public void SetCrystal(int num)
+    {
+        crystalText.text = num.ToString();
     }
     
 }

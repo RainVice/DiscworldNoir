@@ -119,10 +119,13 @@ public class TilemapController : MonoBehaviour
                 }
                 else
                 {
-                    if (EventSystem.current.IsPointerOverGameObject() && 
-                        EventSystem.current.currentSelectedGameObject.layer == LayerMask.NameToLayer("Panel"))
+                    if (EventSystem.current.IsPointerOverGameObject())
                     {
                         
+                        if (EventSystem.current.currentSelectedGameObject.layer != LayerMask.NameToLayer("Panel"))
+                        {
+                            UIManager.Instance.HideInfo();
+                        }
                     }
                     else
                     {
@@ -137,7 +140,8 @@ public class TilemapController : MonoBehaviour
             // 如果放置的地方有物体则返回
             if (baseBuild) return;
             // 判断是否可以放置，如果不可以就直接销毁返回
-            if (!m_InstanceGameObject.GetComponent<BaseBuild>().CanPlace())
+            var component = m_InstanceGameObject.GetComponent<BaseBuild>();
+            if (!component.CanPlace())
             {
                 Destroy(m_InstanceGameObject);
                 Delete();

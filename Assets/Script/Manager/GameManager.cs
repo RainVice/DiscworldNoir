@@ -18,6 +18,15 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
     // 当前选择的一个物体
     public GameObject CurSelectedObject { get; set; }
+    
+    public int CrystalNum {
+        get => m_CrystalNum;
+        set
+        {
+            m_CrystalNum = value;
+            UIManager.Instance.SetCrystal(m_CrystalNum);
+        }
+    }
     #endregion
     
     #region 引用
@@ -31,16 +40,19 @@ public class GameManager : MonoBehaviour
     
     // *************** 变量 *****************
     // 建筑集合分类
-    private Dictionary<Type, List<BaseBuild>> m_Builds;
+    private Dictionary<Type, List<BaseBuild>> m_Builds = new();
 
     // 建筑集合
-    private Dictionary<Vector3Int, BaseBuild> m_BuildList;
+    private Dictionary<Vector3Int, BaseBuild> m_BuildList = new();
 
     // 地形集合
-    private Dictionary<Vector3Int, BaseTerrain> m_TerrainList;
+    private Dictionary<Vector3Int, BaseTerrain> m_TerrainList = new();
     
     // 建筑数据
-    private Dictionary<string, BuildData> m_BuildData;
+    private Dictionary<string, BuildData> m_BuildData = new();
+    
+    // 水晶数量
+    private int m_CrystalNum = 30;
     #endregion
 
     #region 邻接矩阵
@@ -320,6 +332,8 @@ public class GameManager : MonoBehaviour
             RegisterTable(baseBuild.CurPos,keyValuePair.Key.CurPos,keyValuePair.Value);
         }
         m_BuildList.Add(cellPos, baseBuild);
+        // 扣除水晶
+        CrystalNum -= m_BuildData[baseBuild.GetType().Name].price;
     }
     
     /// <summary>

@@ -211,7 +211,7 @@ public abstract class BaseBuild : BaseObstacle
     /// 更改资源
     /// </summary>
     /// <param name="type"></param>
-    public void ChangeNum(Resource resource,int num = 1)
+    public virtual void ChangeNum(Resource resource,int num = 1)
     {
         inventory.TryAdd(resource, 0);
         inventory[resource] += num;
@@ -234,11 +234,18 @@ public abstract class BaseBuild : BaseObstacle
 
     public virtual void Upgrade()
     {
+        if (Constant.DEFAULTNUM * level > GameManager.Instance.CrystalNum)
+        {
+            UIManager.Instance.CreateToast("水晶不足，无法升级");
+            return;
+        }
+        
         if (level >= 5)
         {
             UIManager.Instance.CreateToast("已经升级为最高等级");
             return;
         }
+        GameManager.Instance.CrystalNum -= Constant.DEFAULTNUM * level;
         level++;
         spriteRenderer.color = Constant.colors[level - 1];
     }

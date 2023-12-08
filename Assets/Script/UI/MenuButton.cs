@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿
+using System;
+using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -59,26 +62,50 @@ public class MenuButton : MonoBehaviour
             }
             GameManager.Instance.CurSelectedObject = Home;
         });
-        BtnWall.onClick.AddListener(() => GameManager.Instance.CurSelectedObject = Wall);
-        btnTurret.onClick.AddListener(() => GameManager.Instance.CurSelectedObject = turret);
-        btnMining.onClick.AddListener(() => GameManager.Instance.CurSelectedObject = mining);
-        btnCion.onClick.AddListener(() => GameManager.Instance.CurSelectedObject = cion);
-        btnBullet.onClick.AddListener(() => GameManager.Instance.CurSelectedObject = bullet);
-        btnWay.onClick.AddListener(() => GameManager.Instance.CurSelectedObject = way);
-        btnAxe.onClick.AddListener(() => GameManager.Instance.CurSelectedObject = axe);
-        btnHarvester.onClick.AddListener(() => GameManager.Instance.CurSelectedObject = harvester);
-        btnFactory.onClick.AddListener(() => GameManager.Instance.CurSelectedObject = factory);
+        BtnWall.onClick.AddListener(BuyBuild(Wall));
+        btnTurret.onClick.AddListener(BuyBuild(turret));
+        btnMining.onClick.AddListener(BuyBuild(mining));
+        btnCion.onClick.AddListener(BuyBuild(cion));
+        btnBullet.onClick.AddListener(BuyBuild(bullet));
+        btnWay.onClick.AddListener(BuyBuild(way));
+        btnAxe.onClick.AddListener(BuyBuild(axe));
+        btnHarvester.onClick.AddListener(BuyBuild(harvester));
+        btnFactory.onClick.AddListener(BuyBuild(factory));
+    }
+    
+    // 购买物资
+    private UnityAction BuyBuild(GameObject go)
+    {
+        return () =>
+        {
+            var homeBuilds = GameManager.Instance.GetBuilds(typeof(HomeBuild));
+            if (homeBuilds.Count < 1)
+            {
+                UIManager.Instance.CreateToast("必须先放置大本营");
+                return;
+            }
+            var buildDataByFuzzy = GameManager.Instance.GetBuildDataByFuzzy(go.name);
+            if (buildDataByFuzzy.price <= GameManager.Instance.CrystalNum)
+            {
+                GameManager.Instance.CurSelectedObject = go;
+            }
+            else
+            {
+                UIManager.Instance.CreateToast("水晶数量不足");
+            }
+        };
     }
 
     private void AddEnterListener()
     {
+        // 鼠标移入事件
         var entryEvent = new EventTrigger.TriggerEvent();
         entryEvent.AddListener(OnPointerEnter);
         var entry = new EventTrigger.Entry() { eventID = EventTriggerType.PointerEnter, callback = entryEvent };
+        // 鼠标移出事件
         var exitEvent = new EventTrigger.TriggerEvent();
         exitEvent.AddListener(OnPointerExit);
         var exit = new EventTrigger.Entry() { eventID = EventTriggerType.PointerExit, callback = exitEvent };
-        
         
         btnHome.GetComponent<EventTrigger>().triggers.Add(entry);
         BtnWall.GetComponent<EventTrigger>().triggers.Add(entry);

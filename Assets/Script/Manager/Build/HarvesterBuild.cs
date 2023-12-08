@@ -58,7 +58,8 @@ public class HarvesterBuild : BaseMaker
             $"最大血量：{maxHp} > {(int)(maxHp * Constant.Upgrade(level))}\n" +
             $"制造速度：{productionSpeed} > {productionSpeed * Constant.Upgrade(level)} \n" +
             $"传输速度：{waySpeed} > {waySpeed * Constant.Upgrade(level)}\n" +
-            $"当前血量：{hp}");
+            $"当前血量：{hp}\n" +
+            $"升级花费：{Constant.DEFAULTNUM * level}");
     }
 
     public override void Remove()
@@ -70,6 +71,7 @@ public class HarvesterBuild : BaseMaker
     {
         base.Upgrade();
         maxHp *= (int)Constant.Upgrade(level);
+        hp = maxHp;
         productionSpeed *= Constant.Upgrade(level);
         waySpeed *= Constant.Upgrade(level);
     }

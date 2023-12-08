@@ -30,10 +30,12 @@ public class Info : MonoBehaviour
     public void Upgrade()
     {
         baseBuild.Upgrade();
+        gameObject.SetActive(false);
     }
 
     public void UpgradeAll()
     {
+        gameObject.SetActive(false);
         var baseBuilds = GameManager.Instance.GetBuilds(baseBuild.GetType());
         foreach (var build in baseBuilds)
         {

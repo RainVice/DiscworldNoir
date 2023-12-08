@@ -14,7 +14,7 @@ public abstract class BaseObstacle  : MonoBehaviour
         set => m_curPos = value;
     }
     // 当前位置
-    protected Vector3Int m_curPos;
+    protected Vector3Int m_curPos = Vector3Int.zero;
     public ObstacleType ObstacleType => m_obstacleType;
     protected ObstacleType m_obstacleType;
     

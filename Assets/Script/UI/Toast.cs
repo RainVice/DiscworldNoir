@@ -1,5 +1,6 @@
 ﻿
 using System;
+using Effect;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,13 +23,15 @@ public class Toast : MonoBehaviour
 
     private void Start()
     {
-        Destroy(gameObject,time);
-    }
-
-    private void Update()
-    {
         var imageColor = image.color;
-        imageColor.a -= Time.deltaTime / time;
-        image.color = imageColor;
+        imageColor.a = 0;
+        var textColor = text.color;
+        textColor.a = 0;
+        this.CreateEffect().AddEffects(new[]
+        {
+            image.ColorTo(imageColor, 2f),
+            text.ColorTo(textColor,2f)
+        }).Play(() => { Destroy(gameObject); });
+        // Destroy(gameObject,time);
     }
 }

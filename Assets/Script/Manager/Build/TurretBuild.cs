@@ -43,6 +43,8 @@ public class TurretBuild : BaseAttack
             if (value is Resource.All or Resource.None) continue;
             if (IsNeed().HasFlag(value))
             {
+                
+                if (value == Resource.Bullet && GetNum(value) >= 20) continue;
                 var findAllWay = GameManager.Instance.FindAllWay(CurPos, value, out List<BaseBuild> baseBuilds);
                 for (var i = 0; i < findAllWay.Count; i++)
                 {
@@ -64,7 +66,8 @@ public class TurretBuild : BaseAttack
             m_buildData.name,
             $"最大血量：{maxHp} > {(int)(maxHp * Constant.Upgrade(level))}\n" +
             $"攻击力：{attack} > {attack * Constant.Upgrade(level)} \n" +
-            $"当前血量：{hp}");
+            $"当前血量：{hp}\n" +
+            $"升级花费：{Constant.DEFAULTNUM * level}");
     }
 
     public override void Remove()
@@ -77,6 +80,7 @@ public class TurretBuild : BaseAttack
         base.Upgrade();
         attack *= (int)Constant.Upgrade(level);
         maxHp *= (int)Constant.Upgrade(level);
+        hp = maxHp;
     }
     
 }

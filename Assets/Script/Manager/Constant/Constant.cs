@@ -2,10 +2,10 @@
 
 public static class Constant
 {
-    public static float DEFAULTTIME = 5;
+    public static int DEFAULTNUM = 5;
+    public static float DEFAULTTIME = DEFAULTNUM;
 
-    public static Color[] colors = new Color[]
-    {
+    public static Color[] colors = {
         Color.white,
         Color.green,
         Color.yellow,

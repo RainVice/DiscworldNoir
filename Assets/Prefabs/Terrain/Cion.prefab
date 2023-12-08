@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: -6078235903725093704}
   - component: {fileID: 3470484716971063938}
   m_Layer: 7
-  m_Name: Coin
+  m_Name: Cion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

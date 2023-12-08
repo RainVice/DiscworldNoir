@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Effect
 {
@@ -27,5 +28,13 @@ namespace Effect
         /// <returns></returns>
         public static BaseEffect SlideTFsTo(this Transform transform, List<Vector3> points,float time = 1f,float delay = 0f) => 
             new TFEffects(transform,points,time,delay);
+        
+        
+        public static BaseEffect ColorTo(this Graphic graphic,Color start,Color end,float time = 1f,float delay = 0f) => 
+            new ColorEffect(graphic,start,end,time,delay);
+        public static BaseEffect ColorTo(this Graphic graphic,Color end,float time = 1f,float delay = 0f) => 
+            new ColorEffect(graphic,graphic.color,end,time,delay);
+        public static BaseEffect Color(this Graphic graphic,Color distance,float time = 1f,float delay = 0f) => 
+            new ColorEffect(graphic,graphic.color,graphic.color + distance,time,delay);
     }
 }

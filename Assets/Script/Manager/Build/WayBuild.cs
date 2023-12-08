@@ -32,7 +32,8 @@ public class WayBuild : BaseWay
             m_buildData.name,
             $"最大血量：{maxHp} > {(int)(maxHp * Constant.Upgrade(level))}\n" +
             $"传输速度：{waySpeed} > {waySpeed * Constant.Upgrade(level)}\n" +
-            $"当前血量：{hp}");
+            $"当前血量：{hp}\n" +
+            $"升级花费：{Constant.DEFAULTNUM * level}");
     }
 
     public override void Remove()
@@ -44,6 +45,7 @@ public class WayBuild : BaseWay
     {
         base.Upgrade();
         maxHp *= (int)Constant.Upgrade(level);
+        hp = maxHp;
         waySpeed *= Constant.Upgrade(level);
     }
     
