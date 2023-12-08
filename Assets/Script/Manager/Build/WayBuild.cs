@@ -36,10 +36,7 @@ public class WayBuild : BaseWay
             $"升级花费：{Constant.DEFAULTNUM * level}");
     }
 
-    public override void Remove()
-    {
-        Destroy(gameObject);
-    }
+
 
     public override void Upgrade()
     {

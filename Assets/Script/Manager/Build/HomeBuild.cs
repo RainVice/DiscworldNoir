@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Effect;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -58,6 +59,8 @@ public class HomeBuild : BaseAttack
     public override void Remove()
     {
         UIManager.Instance.CreateToast("大本营不可移除");
+        return;
+        base.Remove();
     }
 
     public override void Upgrade()

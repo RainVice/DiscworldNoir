@@ -69,11 +69,7 @@ public class BulletBuild : BaseMaker
             $"当前血量：{hp}\n" +
             $"升级花费：{Constant.DEFAULTNUM * level}");
     }
-
-    public override void Remove()
-    {
-        Destroy(gameObject);
-    }
+    
 
     public override void Upgrade()
     {

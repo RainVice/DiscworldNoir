@@ -121,8 +121,8 @@ public class TilemapController : MonoBehaviour
                 {
                     if (EventSystem.current.IsPointerOverGameObject())
                     {
-                        
-                        if (EventSystem.current.currentSelectedGameObject.layer != LayerMask.NameToLayer("Panel"))
+                        if (EventSystem.current.currentSelectedGameObject is not null && 
+                            EventSystem.current.currentSelectedGameObject.layer != LayerMask.NameToLayer("Panel"))
                         {
                             UIManager.Instance.HideInfo();
                         }
