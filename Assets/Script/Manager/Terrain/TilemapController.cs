@@ -1,4 +1,5 @@
 using Cinemachine;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
@@ -61,6 +62,21 @@ public class TilemapController : MonoBehaviour
 
     private void Update()
     {
+
+        if (!GameManager.Instance.IsStart)
+        {
+            return;
+        }
+
+        if (GameManager.Instance.IsNight)
+        {
+            if (m_InstanceGameObject is not null)
+            {
+                Destroy(m_InstanceGameObject);
+            }
+            Delete();
+            return;
+        }
         OnMouseToTileListener();
         OnMouseDownListener();
         OnMouseListener();
@@ -90,7 +106,12 @@ public class TilemapController : MonoBehaviour
         {
             var mousePos = m_Camera.ScreenToWorldPoint(Input.mousePosition);
             var offset = mousePos - m_PreMousePos;
-            m_MoveTarget.position -= offset;
+            var position = m_MoveTarget.position;
+            position -= offset;
+            var x = Mathf.Clamp(position.x, -62.07475f, 62.60486f);
+            var y = Mathf.Clamp(position.y, -57.84519f, 56.92491f);
+            position = new Vector3(x, y, position.z);
+            m_MoveTarget.position = position;
             m_PreMousePos = mousePos;
         }
     }

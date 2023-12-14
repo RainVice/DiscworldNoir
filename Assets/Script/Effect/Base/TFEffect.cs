@@ -11,6 +11,7 @@ namespace Effect
 
         public TFEffect(Transform transform, Vector3 start, Vector3 end, float time, float delayTime)
         {
+            go = transform.gameObject;
             reSetPosition = transform.position;
             effectType = EffectType.Move;
             this.transform = transform;

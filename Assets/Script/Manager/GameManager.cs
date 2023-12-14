@@ -5,6 +5,7 @@ using DB;
 using Effect;
 using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 /// <summary>
 /// 整个游戏的管理器主要用于数据交换
@@ -27,6 +28,10 @@ public class GameManager : MonoBehaviour
             UIManager.Instance.SetCrystal(m_CrystalNum);
         }
     }
+    
+    public bool IsStart { get => m_IsStart; set => m_IsStart = value; }
+    
+    public bool IsNight { get => m_IsNight; set => m_IsNight = value; }
     #endregion
     
     #region 引用
@@ -53,6 +58,22 @@ public class GameManager : MonoBehaviour
     
     // 水晶数量
     private int m_CrystalNum = 30;
+    
+    // 游戏是否开始
+    private bool m_IsStart = false;
+    
+    // 是否黑夜
+    private bool m_IsNight = false;
+    
+    // 计时器
+    private float m_Timer = 0;
+    
+    
+    //大本营
+    public GameObject m_Home;
+    // 最外层距离
+    public float m_OutDistance = 0;
+    
     #endregion
 
     #region 邻接矩阵
@@ -226,12 +247,21 @@ public class GameManager : MonoBehaviour
 
     #endregion
     
+    #region 生命周期
     private void Awake()
     {
         Instance = this;
         // 获取建筑数据
         InitBuilds();
     }
+
+    private void Update()
+    {
+        // 切换时间
+        ChangeTime();
+    }
+
+    #endregion
 
 
     /// <summary>
@@ -241,10 +271,7 @@ public class GameManager : MonoBehaviour
     {
         m_BuildData = new Dictionary<string, BuildData>();
         var buildDatas = new QueryWapper<BuildData>().Do();
-        buildDatas.ForEach(buildData =>
-        {
-            m_BuildData.Add(buildData.buildName, buildData);
-        });
+        buildDatas.ForEach(buildData => m_BuildData.Add(buildData.buildName, buildData));
     }
     
     #region 建筑物
@@ -318,6 +345,12 @@ public class GameManager : MonoBehaviour
     /// <param name="build">建筑物</param>
     public void AddBuild(Vector3Int cellPos, GameObject build)
     {
+        // 保存最外层最大距离
+        var offset = m_Grid.CellToWorld(cellPos) - m_Home.transform.position;
+        if (offset.magnitude > m_OutDistance)
+        {
+            m_OutDistance = offset.magnitude;
+        }
         m_BuildList ??= new Dictionary<Vector3Int, BaseBuild>();
         var baseBuild = build.GetComponent<BaseBuild>();
         // 初始化建筑被放置时的一些属性
@@ -342,6 +375,10 @@ public class GameManager : MonoBehaviour
     /// <param name="build">建筑物</param>
     public void AddBuild(GameObject build)
     {
+        if (build.GetComponent<BaseObstacle>() is HomeBuild)
+        {
+            m_Home = build;
+        }
         m_Builds ??= new Dictionary<Type, List<BaseBuild>>();
         var baseBuild = build.GetComponent<BaseBuild>();
         if (!m_Builds.ContainsKey(baseBuild.GetType()))
@@ -416,6 +453,33 @@ public class GameManager : MonoBehaviour
     #endregion
     
     #region 功能
+    // 切换时间
+    public void ChangeTime()
+    {
+        if (!m_IsStart)
+        {
+            return;
+        }
+        m_Timer += Time.deltaTime;
+        UIManager.Instance.SetTime((int)m_Timer);
+        if (m_Timer >= 10f)
+        {
+            m_Timer = 0f;
+            m_IsNight = !m_IsNight;
+            if (m_IsNight)
+            {
+                // 生成怪物
+                float angle = Random.Range(0, 360);
+                var radians = angle * Mathf.Deg2Rad;
+                // 使用三角函数计算Vector2的x和y分量
+                var x = Mathf.Cos(radians);
+                var y = Mathf.Sin(radians);
+                // 创建Vector2,此为生成怪物的坐标
+                var vector = (new Vector3(x, y,0).normalized * (m_OutDistance + 1)) + m_Home.transform.position;
+                // todo 生成怪物
+            }
+        }
+    }
     
     /// <summary>
     /// 扫描附近物品

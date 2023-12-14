@@ -33,8 +33,18 @@ namespace Effect
         public static BaseEffect ColorTo(this Graphic graphic,Color start,Color end,float time = 1f,float delay = 0f) => 
             new ColorEffect(graphic,start,end,time,delay);
         public static BaseEffect ColorTo(this Graphic graphic,Color end,float time = 1f,float delay = 0f) => 
-            new ColorEffect(graphic,graphic.color,end,time,delay);
+            ColorTo(graphic,graphic.color,end,time,delay);
         public static BaseEffect Color(this Graphic graphic,Color distance,float time = 1f,float delay = 0f) => 
-            new ColorEffect(graphic,graphic.color,graphic.color + distance,time,delay);
+            ColorTo(graphic,graphic.color,graphic.color + distance,time,delay);
+        
+        
+        public static BaseEffect ScaleTFTo(this Transform transform,Vector3 start,Vector3 end,float time = 1f,float delay = 0f) => 
+            new ScaleEffect(transform,start,end,time,delay);
+        public static BaseEffect ScaleTFTo(this Transform transform,Vector3 end,float time = 1f,float delay = 0f) => 
+            ScaleTFTo(transform,transform.localScale,end,time,delay);
+        public static BaseEffect ScaleTF(this Transform transform, Vector3 distance, float time = 1f, float delay = 0f) => 
+            ScaleTFTo(transform, transform.localScale, transform.localScale + distance, time, delay);
+
+        
     }
 }

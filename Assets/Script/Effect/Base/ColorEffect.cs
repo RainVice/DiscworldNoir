@@ -11,6 +11,7 @@ namespace Effect
         private Color end;
         public ColorEffect(Graphic graphic, Color start, Color end, float time, float delayTime)
         {
+            go = graphic.gameObject;
             reColor = graphic.color;
             effectType = EffectType.Color;
             this.graphic = graphic;

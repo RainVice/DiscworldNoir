@@ -17,6 +17,10 @@ public class UIManager : MonoBehaviour
     public GameObject infoPanel;
     // 水晶数量
     public Text crystalText;
+    // 倒计时文本
+    public Text timeText;
+    // 背景
+    public Image bg;
     
     // *************** 变量 *****************
     private void Awake()
@@ -60,6 +64,12 @@ public class UIManager : MonoBehaviour
     public void SetCrystal(int num)
     {
         crystalText.text = num.ToString();
+    }
+    
+    public void SetTime(int time)
+    {
+        bg.gameObject.SetActive(GameManager.Instance.IsNight);
+        timeText.text = time.ToString();
     }
     
 }

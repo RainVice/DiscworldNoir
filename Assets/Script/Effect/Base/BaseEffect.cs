@@ -1,7 +1,14 @@
-﻿namespace Effect
+﻿using UnityEngine;
+
+namespace Effect
 {
     public abstract class BaseEffect
     {
+        public GameObject Go {
+            get => go;
+            protected set => go = value;
+        }
+        
         public EffectType EffectType => effectType;
         public bool IsDone => isDone;
 
@@ -15,6 +22,8 @@
         protected float delayTime;
         // 计时器
         protected float timer;
+        // 执行动画的对象
+        protected GameObject go;
         
         /// <summary>
         /// 特效执行逻辑

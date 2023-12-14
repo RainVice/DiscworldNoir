@@ -13,6 +13,7 @@ namespace Effect
         
         public TFEffects(Transform transform, List<Vector3> points, float time, float delayTime)
         {
+            go = transform.gameObject;
             reSetPosition = transform.position;
             effectType = EffectType.Move;
             this.transform = transform;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Effect
@@ -12,7 +13,7 @@ namespace Effect
         private bool isDone;
         private MonoBehaviour mono;
         private Action finishCallback;
-        private Dictionary<EffectType,BaseEffect> effects = new();
+        private Dictionary<GameObject,List<BaseEffect>> effects = new();
         
         public EffectSet(MonoBehaviour mono)
         {
@@ -47,20 +48,26 @@ namespace Effect
         /// <param name="effect"></param>
         public EffectSet AddEffect(BaseEffect effect)
         {
-            if (EffectCenter.effects.TryGetValue(mono.gameObject, out var eff))
+            if (EffectCenter.effects.TryGetValue(effect.Go, out var eff))
             {
                 if (eff.Contains(effect.EffectType))
                 {
-                    Debug.LogError("当前对象已有动画集存在,添加失败");
-                    return this;
+                    Debug.LogWarning("当前对象已有同类型动画集存在,添加失败");
                 }
-                EffectCenter.effects[mono.gameObject].AddRange(effects.Keys);
+                else
+                {
+                    EffectCenter.effects[effect.Go].Add(effect.EffectType);
+                }
             }
             else
             {
-                EffectCenter.effects.Add(mono.gameObject, new List<EffectType>(effects.Keys));
+                EffectCenter.effects.Add(effect.Go, new List<EffectType>(new[] { effect.EffectType }));
             }
-            effects[effect.EffectType] = effect;
+            if (!effects.ContainsKey(effect.Go))
+            {
+                effects[effect.Go] = new List<BaseEffect>();
+            }
+            effects[effect.Go].Add(effect);
             return this;
         }
 
@@ -86,15 +93,15 @@ namespace Effect
             var num = effects.Count;
             while (isRun && !isDone)
             {
-                foreach (var value in effects.Values)
+                foreach (var effect in effects.Values.SelectMany(value => value))
                 {
-                    if (!value.IsDone)
+                    if (!effect.IsDone)
                     {
-                        value.Do();
+                        effect.Do();
                     }
                     else
                     {
-                        num --;
+                        num--;
                     }
                 }
                 if (num == 0)
@@ -118,7 +125,10 @@ namespace Effect
         public void Stop(Action action = null)
         {
             isRun = false;
-            EffectCenter.effects.Remove(mono.gameObject);
+            foreach (var effectsKey in effects.Keys)
+            {
+                EffectCenter.effects.Remove(effectsKey);
+            }
             action?.Invoke();
         }
         
