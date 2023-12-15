@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using UnityEngine;
-
+/// <summary>
+/// 运输器
+/// </summary>
 public class WayBuild : BaseWay
 {
     

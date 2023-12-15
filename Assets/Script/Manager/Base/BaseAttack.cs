@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-
+/// <summary>
+/// 具有攻击功能的物品基类
+/// </summary>
 public abstract class BaseAttack : BaseBuild
 {
     // 攻击力
@@ -37,17 +39,27 @@ public abstract class BaseAttack : BaseBuild
         }
     }
 
+    /// <summary>
+    /// 添加敌人
+    /// </summary>
+    /// <param name="enemy"></param>
     public void AddEnemy(Enemy enemy)
     {
-        Debug.Log("添加敌人");
         enemies.Add(enemy);
     }
     
+    /// <summary>
+    ///     移除敌人
+    /// </summary>
+    /// <param name="enemy"></param>
     public void RemoveEnemy(Enemy enemy)
     {
         enemies.Remove(enemy);
     }
 
+    /// <summary>
+    /// 攻击事件
+    /// </summary>
     protected void Attack()
     {
         if (GetNum(Resource.Bullet) <= 0) return;

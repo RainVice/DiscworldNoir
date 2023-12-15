@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
@@ -77,6 +78,12 @@ public class UIManager : MonoBehaviour
     public void SetDay(int num)
     {
         dayText.text = $"已坚持\n{num}\n天";
+    }
+    
+    public void GameOver()
+    {
+        SceneManager.LoadSceneAsync("End", LoadSceneMode.Additive);
+        Time.timeScale = 0;
     }
     
 }

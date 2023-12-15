@@ -1,5 +1,7 @@
 ﻿using System;
-
+/// <summary>
+/// 水晶
+/// </summary>
 public class CrystalTerrain : BaseTerrain
 {
     

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using UnityEngine;
-
+/// <summary>
+/// 水晶挖掘器
+/// </summary>
 public class CionBuild : BaseProduce
 {
     protected override void OnProduce()

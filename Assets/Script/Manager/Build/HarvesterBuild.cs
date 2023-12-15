@@ -1,6 +1,8 @@
 ﻿using System;
 using UnityEngine;
-
+/// <summary>
+/// 木材加厂
+/// </summary>
 public class HarvesterBuild : BaseMaker
 {
 

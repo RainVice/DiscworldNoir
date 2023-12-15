@@ -2,6 +2,9 @@
 using System.Linq;
 using UnityEngine;
 
+/// <summary>
+/// 伐木机
+/// </summary>
 public class AxeBuild : BaseProduce
 {
     protected override void OnProduce()

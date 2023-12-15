@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// 子弹工厂
+/// </summary>
 public class BulletBuild : BaseMaker
 {
     public override Resource IsNeed()

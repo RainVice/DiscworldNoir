@@ -1,5 +1,7 @@
 ﻿using System;
-
+/// <summary>
+/// 所有地形的基类
+/// </summary>
 public abstract class BaseTerrain : BaseObstacle
 {
     public TerrainType TerrainType => m_terrainType;

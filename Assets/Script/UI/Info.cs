@@ -1,7 +1,9 @@
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
-
+/// <summary>
+/// 建筑信息面板
+/// </summary>
 public class Info : MonoBehaviour
 {
     public BaseBuild BaseBuild

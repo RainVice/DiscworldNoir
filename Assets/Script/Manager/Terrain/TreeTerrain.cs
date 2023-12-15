@@ -1,4 +1,7 @@
-﻿public class TreeTerrain : BaseTerrain
+﻿/// <summary>
+/// 数
+/// </summary>
+public class TreeTerrain : BaseTerrain
 {
     protected override void Awake()
     {

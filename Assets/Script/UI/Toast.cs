@@ -4,6 +4,9 @@ using Effect;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// 吐司警告
+/// </summary>
 public class Toast : MonoBehaviour
 {
     private Image image;

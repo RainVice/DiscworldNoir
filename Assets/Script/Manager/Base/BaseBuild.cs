@@ -5,6 +5,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEditor.Build;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// 所有建筑的基类
@@ -18,6 +19,11 @@ public abstract class BaseBuild : BaseObstacle
         get => isPlace;
         set => isPlace = value;
     }
+    
+    // ***************** 引用 ******************
+    
+    // 血条
+    public Slider slider;
 
     // ***************** 变量 ******************
     // 建筑中文名
@@ -43,20 +49,16 @@ public abstract class BaseBuild : BaseObstacle
     // 运输计时
     private float m_wayTimer;
     protected SpriteRenderer spriteRenderer;
-
     
     
     // 连接的障碍
     protected Dictionary<Type, List<BaseObstacle>> obstacles = new();
     // 库存物资
     protected Dictionary<Resource, int> inventory = new();
-    
     // 数据
     protected BuildData m_buildData;
-
     // 未放置状态的上一步位置
     protected Vector3 m_lastPos;
-
     // 线条集合
     protected Dictionary<BaseObstacle,Line> m_lineDic = new();
 
@@ -76,6 +78,7 @@ public abstract class BaseBuild : BaseObstacle
         upgradePrice = m_buildData.upgradePrice;
         price = m_buildData.price;
         waySpeed = m_buildData.waySpeed;
+        slider = GetComponentInChildren<Slider>();
     }
 
     protected virtual void OnDestroy()
@@ -103,10 +106,14 @@ public abstract class BaseBuild : BaseObstacle
     
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if (collision.gameObject.gameObject.CompareTag("Enemy"))
+        // 接触到敌人扣血
+        if (collision.gameObject.CompareTag("Enemy"))
         {
             Debug.Log(Time.fixedDeltaTime);
             hp -= Time.fixedDeltaTime * 5f;
+            slider.gameObject.SetActive(true);
+            // 血条显示
+            slider.value = hp / maxHp;
         }
         if (hp <= 0)
         {
@@ -114,6 +121,18 @@ public abstract class BaseBuild : BaseObstacle
         }
     }
 
+    private void OnCollisionExit2D(Collision2D other)
+    {
+        // 敌人离开隐藏血条
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            slider.gameObject.SetActive(false);
+        }
+    }
+
+    /// <summary>
+    /// 展示建筑信息
+    /// </summary>
     public virtual void ShowInfo() { }
 
     /// <summary>
@@ -146,6 +165,11 @@ public abstract class BaseBuild : BaseObstacle
         }
 
     }
+    
+    
+    /// <summary>
+    /// 扫描周围的格子
+    /// </summary>
     private void Scan()
     {        
         // 销毁上一次资源
@@ -245,6 +269,9 @@ public abstract class BaseBuild : BaseObstacle
         return false;
     }
 
+    /// <summary>
+    /// 升级
+    /// </summary>
     public virtual void Upgrade()
     {
         if (Constant.DEFAULTNUM * level > GameManager.Instance.CrystalNum)
@@ -263,6 +290,9 @@ public abstract class BaseBuild : BaseObstacle
         spriteRenderer.color = Constant.colors[level - 1];
     }
 
+    /// <summary>
+    /// 移除
+    /// </summary>
     public virtual void Remove()
     {
         Destroy(gameObject);

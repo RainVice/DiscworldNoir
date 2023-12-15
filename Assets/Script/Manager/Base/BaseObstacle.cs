@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿using UnityEngine;
+/// <summary>
+/// 所有障碍物的基类，包括建筑和地形
+/// </summary>
 public abstract class BaseObstacle  : MonoBehaviour
 {
-    
-    
 
     // 当前座标
     public Vector3Int CurPos

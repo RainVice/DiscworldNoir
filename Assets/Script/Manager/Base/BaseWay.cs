@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-
+/// <summary>
+/// 所有运输器（中转站）的基类
+/// </summary>
 public abstract class BaseWay : BaseBuild
 {
     // protected Resource needResource;

@@ -1,9 +1,10 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-
+/// <summary>
+/// 所有制造机物品的基类
+/// </summary>
 public abstract class BaseMaker : BaseBuild
 {
     // 生产速度

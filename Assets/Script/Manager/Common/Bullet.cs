@@ -2,7 +2,9 @@
 using System;
 using Unity.VisualScripting;
 using UnityEngine;
-
+/// <summary>
+/// 子弹
+/// </summary>
 public class Bullet : MonoBehaviour
 {
 

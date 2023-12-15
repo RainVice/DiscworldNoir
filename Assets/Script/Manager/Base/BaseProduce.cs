@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
+/// <summary>
+/// 所有生产者的基类
+/// </summary>
 public abstract class BaseProduce : BaseBuild
 {
     

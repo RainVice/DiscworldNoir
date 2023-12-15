@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// 大本营控制类
@@ -73,5 +76,16 @@ public class HomeBuild : BaseAttack
         {
             GameManager.Instance.CrystalNum += num;
         }
+    }
+
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        if (Input.GetMouseButtonDown(1) || Input.GetMouseButton(1))
+        {
+            return;
+        }
+        UIManager.Instance.GameOver();
     }
 }

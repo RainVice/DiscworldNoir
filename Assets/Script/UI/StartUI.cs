@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+/// <summary>
+/// 开始界面UI
+/// </summary>
 public class StartUI : MonoBehaviour
 {
     public Text titleText;

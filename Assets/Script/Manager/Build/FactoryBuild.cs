@@ -1,6 +1,8 @@
 ﻿using System;
 using UnityEngine;
-
+/// <summary>
+/// 铁矿加工厂
+/// </summary>
 public class FactoryBuild : BaseMaker
 {
     public override Resource IsNeed()

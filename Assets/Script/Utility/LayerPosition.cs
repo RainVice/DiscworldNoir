@@ -1,6 +1,8 @@
 ﻿using System;
 using UnityEngine;
-
+/// <summary>
+/// 自定义坐标系统
+/// </summary>
 public struct LayerPosition
 {
     private static float Length = 1.05f;

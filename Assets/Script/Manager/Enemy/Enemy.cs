@@ -1,16 +1,21 @@
 ﻿using System;
 using Unity.VisualScripting;
 using UnityEngine;
-
+using UnityEngine.UI;
+/// <summary>
+/// 敌人
+/// </summary>
 public class Enemy : MonoBehaviour
 {
     private float hp = 40f;
     private Rigidbody2D m_rg2d;
+    private Slider m_slider;
 
     private void Awake()
     {
         m_rg2d = GetComponent<Rigidbody2D>();
         hp *= 1f + GameManager.Instance.Day;
+        m_slider = GetComponentInChildren<Slider>();
     }
 
     private void FixedUpdate()
@@ -43,6 +48,8 @@ public class Enemy : MonoBehaviour
     public void ChangeHP(int num = -1)
     {
         hp += num;
+        m_slider.gameObject.SetActive(true);
+        m_slider.value = hp / 40f;
         if (hp <= 0)
         {
             Destroy(gameObject);
