@@ -76,7 +76,6 @@ public abstract class BaseBuild : BaseObstacle
         upgradePrice = m_buildData.upgradePrice;
         price = m_buildData.price;
         waySpeed = m_buildData.waySpeed;
-        slider = GetComponentInChildren<Slider>();
     }
 
     protected virtual void OnDestroy()

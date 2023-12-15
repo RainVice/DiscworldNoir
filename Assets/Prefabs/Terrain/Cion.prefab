@@ -564,7 +564,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fe1fd63413a4768bf111929a04ff6f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slider: {fileID: 0}
+  slider: {fileID: 2750267527897773246}
 --- !u!58 &3470484716971063938
 CircleCollider2D:
   m_ObjectHideFlags: 0

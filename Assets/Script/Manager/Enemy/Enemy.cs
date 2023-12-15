@@ -9,13 +9,12 @@ public class Enemy : MonoBehaviour
 {
     private float hp = 40f;
     private Rigidbody2D m_rg2d;
-    private Slider m_slider;
+    public Slider m_slider;
 
     private void Awake()
     {
         m_rg2d = GetComponent<Rigidbody2D>();
         hp *= 1f + GameManager.Instance.Day;
-        m_slider = GetComponentInChildren<Slider>();
     }
 
     private void FixedUpdate()
