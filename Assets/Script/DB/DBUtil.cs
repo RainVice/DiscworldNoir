@@ -100,7 +100,7 @@ namespace DB
         {
             if (m_Connection is null)
             {
-                var path = Application.dataPath + "/DB/DiscworldNoir.db";
+                var path = Application.streamingAssetsPath + "/DiscworldNoir.db";
                 m_Connection = new SqliteConnection("Data Source=" + path);
                 m_Connection.Open();
             }
