@@ -8,7 +8,7 @@ public class Toast : MonoBehaviour
 {
     private Image image;
     private Text text;
-    private float time = 4f;
+    // private float time = 4f;
 
     private void Awake()
     {

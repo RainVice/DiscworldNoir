@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Effect;
-using UnityEngine;
-using UnityEngine.EventSystems;
 
 /// <summary>
 /// 大本营控制类
@@ -13,7 +10,7 @@ public class HomeBuild : BaseAttack
     public override bool CanPlace()
     {
         var homeBuilds = GameManager.Instance.GetBuilds(typeof(HomeBuild));
-        return homeBuilds.Count < 1;
+        return base.CanPlace() && homeBuilds.Count < 1;
     }
 
     public override Resource IsNeed()
@@ -59,8 +56,6 @@ public class HomeBuild : BaseAttack
     public override void Remove()
     {
         UIManager.Instance.CreateToast("大本营不可移除");
-        return;
-        base.Remove();
     }
 
     public override void Upgrade()

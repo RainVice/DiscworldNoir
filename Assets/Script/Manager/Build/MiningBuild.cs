@@ -42,7 +42,7 @@ public class MiningBuild : BaseProduce
     
     public override bool CanPlace()
     {
-        return obstacles.ContainsKey(typeof(IronTerrain));
+        return base.CanPlace() && obstacles.ContainsKey(typeof(IronTerrain));
     }
 
     public override bool IsHave(Resource resource)

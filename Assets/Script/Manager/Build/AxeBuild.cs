@@ -39,7 +39,7 @@ public class AxeBuild : BaseProduce
     }
     public override bool CanPlace()
     {
-        return obstacles.ContainsKey(typeof(TreeTerrain));
+        return base.CanPlace() && obstacles.ContainsKey(typeof(TreeTerrain));
     }
 
     public override bool IsHave(Resource resource)

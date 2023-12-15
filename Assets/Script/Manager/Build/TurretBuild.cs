@@ -14,7 +14,15 @@ public class TurretBuild : BaseAttack
 
     public override bool CanPlace()
     {
-        return obstacles.ContainsKey(typeof(HomeBuild)) || obstacles.ContainsKey(typeof(BulletBuild)) || obstacles.ContainsKey(typeof(WayBuild));
+        return base.CanPlace() 
+            &&
+            (
+                obstacles.ContainsKey(typeof(HomeBuild)) 
+                || 
+                obstacles.ContainsKey(typeof(BulletBuild)) 
+                || 
+                obstacles.ContainsKey(typeof(WayBuild))
+                );
     }
 
     protected override void OnScan(out Action clean, out Action<BaseObstacle> action)

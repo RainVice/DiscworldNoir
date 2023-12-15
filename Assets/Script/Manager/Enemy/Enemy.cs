@@ -1,25 +1,45 @@
 ﻿using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    private int hp = 100;
-    
+    private float hp = 40f;
+    private Rigidbody2D m_rg2d;
+
     private void Awake()
     {
-        Debug.Log("awake");
+        m_rg2d = GetComponent<Rigidbody2D>();
+        hp *= 1f + GameManager.Instance.Day;
     }
-    
+
+    private void FixedUpdate()
+    {
+        if (!GameManager.Instance.IsNight)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        if (GameManager.Instance.Home.IsDestroyed())
+        {
+            Destroy(gameObject);
+            return;
+        }
+        m_rg2d.velocity = (GameManager.Instance.Home.transform.position - transform.position).normalized * 0.5f;
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("触发了" + other.gameObject.name);
         var baseAttack = other.gameObject.GetComponent<BaseAttack>();
-        if (baseAttack is not null)
-        {
-            baseAttack.AddEnemy(this);
-        }
+        baseAttack?.AddEnemy(this);
     }
-    
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        var baseAttack = other.gameObject.GetComponent<BaseAttack>();
+        baseAttack?.RemoveEnemy(this);
+    }
+
     public void ChangeHP(int num = -1)
     {
         hp += num;

@@ -40,7 +40,7 @@ public class CionBuild : BaseProduce
     }
     public override bool CanPlace()
     {
-        return obstacles.ContainsKey(typeof(CrystalTerrain));
+        return base.CanPlace() && obstacles.ContainsKey(typeof(CrystalTerrain));
     }
 
     public override bool IsHave(Resource resource)

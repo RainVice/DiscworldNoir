@@ -4,6 +4,11 @@ public static class Constant
 {
     public static int DEFAULTNUM = 5;
     public static float DEFAULTTIME = DEFAULTNUM;
+    public static float ATTACKCD = 1f;
+    //生成怪物时间
+    public static float ENEMYCD = 10f;
+    // 黑夜切换时间
+    public static float NightCD = 30f;
 
     public static Color[] colors = {
         Color.white,

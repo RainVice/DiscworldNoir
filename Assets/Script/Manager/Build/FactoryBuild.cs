@@ -47,7 +47,7 @@ public class FactoryBuild : BaseMaker
 
     public override bool CanPlace()
     {
-        return obstacles.ContainsKey(typeof(MiningBuild)) || obstacles.ContainsKey(typeof(WayBuild));
+        return base.CanPlace() && obstacles.ContainsKey(typeof(MiningBuild)) || obstacles.ContainsKey(typeof(WayBuild));
     }
     
     

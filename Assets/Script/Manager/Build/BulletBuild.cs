@@ -50,12 +50,14 @@ public class BulletBuild : BaseMaker
 
     public override bool CanPlace()
     {
-        return 
-            (
-                obstacles.ContainsKey(typeof(FactoryBuild)) 
-                && obstacles.ContainsKey(typeof(HarvesterBuild))
-                ) || 
-               obstacles.ContainsKey(typeof(WayBuild));
+        return base.CanPlace() &&
+               (
+                   (obstacles.ContainsKey(typeof(FactoryBuild)) 
+                    && 
+                    obstacles.ContainsKey(typeof(HarvesterBuild))) 
+                   ||
+                   obstacles.ContainsKey(typeof(WayBuild))
+                   );
     }
     
     

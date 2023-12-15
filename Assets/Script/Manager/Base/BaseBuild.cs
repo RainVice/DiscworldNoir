@@ -31,7 +31,7 @@ public abstract class BaseBuild : BaseObstacle
     // 类型
     protected BuildType buildType;
     // 生命
-    protected int hp;
+    protected float hp;
     // 最大生命
     protected int maxHp;
     // 升级价格
@@ -98,6 +98,19 @@ public abstract class BaseBuild : BaseObstacle
                 m_wayTimer %= Constant.DEFAULTTIME / waySpeed;
                 OnWay();
             }
+        }
+    }
+    
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.gameObject.CompareTag("Enemy"))
+        {
+            Debug.Log(Time.fixedDeltaTime);
+            hp -= Time.fixedDeltaTime * 5f;
+        }
+        if (hp <= 0)
+        {
+            Destroy(gameObject);
         }
     }
 
@@ -204,7 +217,7 @@ public abstract class BaseBuild : BaseObstacle
     /// <returns></returns>
     public virtual bool CanPlace()
     {
-        return true;
+        return GameManager.Instance.CrystalNum >= price;
     }
 
     /// <summary>

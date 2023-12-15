@@ -1,5 +1,6 @@
 ﻿
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
@@ -8,11 +9,7 @@ public class Bullet : MonoBehaviour
     public Enemy Target
     {
         get => target;
-        set
-        {
-            target = value;
-            offset = target.transform.position - transform.position;
-        }
+        set => target = value;
     }
 
     public int Attack
@@ -23,16 +20,26 @@ public class Bullet : MonoBehaviour
     
     private Enemy target;
     private int attack;
-    private Vector3 offset;
+    private Rigidbody2D m_rg2d;
+
+    private void Awake()
+    {
+        m_rg2d = GetComponent<Rigidbody2D>();
+    }
 
     private void FixedUpdate()
     {
-        transform.Translate( offset * 0.02f);
+        if (target.IsDestroyed())
+        {
+            Destroy(gameObject);
+            return;
+        }
+        m_rg2d.velocity = (target.transform.position - transform.position).normalized * 5f;
     }
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.CompareTag(nameof(Enemy)))
+        if (other.gameObject.CompareTag("Enemy"))
         {
             var component = other.gameObject.GetComponent<Enemy>();
             component.ChangeHP(-attack);

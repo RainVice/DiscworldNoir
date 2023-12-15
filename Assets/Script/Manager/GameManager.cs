@@ -32,6 +32,10 @@ public class GameManager : MonoBehaviour
     public bool IsStart { get => m_IsStart; set => m_IsStart = value; }
     
     public bool IsNight { get => m_IsNight; set => m_IsNight = value; }
+    
+    public GameObject Home => m_Home;
+    
+    public int Day => m_Day;
     #endregion
     
     #region 引用
@@ -39,6 +43,8 @@ public class GameManager : MonoBehaviour
     public Grid m_Grid;
     public GameObject LinePrefab;
     public GameObject CirclePrefab;
+    // 敌人
+    public GameObject EnemyPrefab;
     #endregion
     
     #region 变量
@@ -65,14 +71,20 @@ public class GameManager : MonoBehaviour
     // 是否黑夜
     private bool m_IsNight = false;
     
-    // 计时器
+    // 黑夜计时器
     private float m_Timer = 0;
+    
+    // 敌人生成计时器
+    private float m_EnemyTimer = 5f;
+    
+    // 度过的天数
+    private int m_Day = 0;
     
     
     //大本营
-    public GameObject m_Home;
+    private GameObject m_Home;
     // 最外层距离
-    public float m_OutDistance = 0;
+    private float m_OutDistance = 0;
     
     #endregion
 
@@ -86,7 +98,7 @@ public class GameManager : MonoBehaviour
     // 邻接表长度
     private int length = 0;
     // 度的数量
-    private int degree = 0;
+    // private int degree = 0;
     
     // 注册邻接表
     public void RegisterFrom(Vector3Int v3i)
@@ -255,10 +267,12 @@ public class GameManager : MonoBehaviour
         InitBuilds();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         // 切换时间
         ChangeTime();
+        // 生成怪物
+        CreateEnemy();
     }
 
     #endregion
@@ -453,21 +467,18 @@ public class GameManager : MonoBehaviour
     #endregion
     
     #region 功能
-    // 切换时间
-    public void ChangeTime()
+    
+    // 生成怪物
+    private void CreateEnemy()
     {
-        if (!m_IsStart)
+
+        if (Home is null || Home.IsDestroyed()) return;
+        if (m_IsNight)
         {
-            return;
-        }
-        m_Timer += Time.deltaTime;
-        UIManager.Instance.SetTime((int)m_Timer);
-        if (m_Timer >= 10f)
-        {
-            m_Timer = 0f;
-            m_IsNight = !m_IsNight;
-            if (m_IsNight)
+            m_EnemyTimer += Time.fixedDeltaTime;
+            if (m_EnemyTimer >= Constant.ENEMYCD / (1f + (0.5f * m_Day)))
             {
+                m_EnemyTimer = 0;
                 // 生成怪物
                 float angle = Random.Range(0, 360);
                 var radians = angle * Mathf.Deg2Rad;
@@ -475,8 +486,30 @@ public class GameManager : MonoBehaviour
                 var x = Mathf.Cos(radians);
                 var y = Mathf.Sin(radians);
                 // 创建Vector2,此为生成怪物的坐标
-                var vector = (new Vector3(x, y,0).normalized * (m_OutDistance + 1)) + m_Home.transform.position;
+                var vector = (new Vector3(x, y,0).normalized * (m_OutDistance + Random.Range(3f, 5f))) + m_Home.transform.position;
                 // todo 生成怪物
+                Instantiate(EnemyPrefab, vector, Quaternion.identity);
+            }
+        }
+    }
+    
+    // 切换时间
+    public void ChangeTime()
+    {
+        if (!m_IsStart)
+        {
+            return;
+        }
+        m_Timer += Time.fixedDeltaTime;
+        UIManager.Instance.SetTime((int)m_Timer);
+        if (m_Timer >= Constant.NightCD)
+        {
+            m_Timer = 0f;
+            m_IsNight = !m_IsNight;
+            if (!m_IsNight)
+            {
+                m_Day++;
+                UIManager.Instance.SetDay(m_Day);
             }
         }
     }

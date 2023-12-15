@@ -20,7 +20,7 @@ public abstract class BaseAttack : BaseBuild
         base.Awake();
         attack = m_buildData.attack;
         buildType = BuildType.Attack;
-        inventory.Add(Resource.Bullet,20);
+        inventory.Add(Resource.Bullet,30);
     }
 
     protected override void FixedUpdate()
@@ -29,9 +29,9 @@ public abstract class BaseAttack : BaseBuild
         if (isPlace)
         {
             attackTimer += Time.fixedDeltaTime;
-            if (attackTimer >= Constant.DEFAULTTIME)
+            if (attackTimer >= Constant.ATTACKCD)
             {
-                attackTimer %= Constant.DEFAULTTIME;
+                attackTimer %= Constant.ATTACKCD;
                 Attack();
             }
         }
@@ -39,27 +39,29 @@ public abstract class BaseAttack : BaseBuild
 
     public void AddEnemy(Enemy enemy)
     {
+        Debug.Log("添加敌人");
         enemies.Add(enemy);
+    }
+    
+    public void RemoveEnemy(Enemy enemy)
+    {
+        enemies.Remove(enemy);
     }
 
     protected void Attack()
     {
         if (GetNum(Resource.Bullet) <= 0) return;
-        for (var i = 0; i < enemies.Count; i++)
-        {
-            if (enemies[i] is null || enemies[i].IsDestroyed())
-            {
-                enemies.RemoveAt(i);
-                i--;
-            }
-            else
-            {
-                var instantiate = Instantiate(bullet, transform.position, Quaternion.identity);
-                var component = instantiate.GetComponent<Bullet>();
-                component.Attack = attack;
-                component.Target = enemies[i];
-            }
-        }
+        if (enemies.Count == 0) return;
+        if (enemies[0].IsDestroyed()) enemies.RemoveAt(0);
+        if (enemies.Count == 0) return;
+        
+        var instantiate = Instantiate(bullet, transform.position, Quaternion.identity);
+        var component = instantiate.GetComponent<Bullet>();
+        component.Attack = attack;
+        component.Target = enemies[0];
+        ChangeNum(Resource.Bullet,-1);
+        
+
     }
     
 }

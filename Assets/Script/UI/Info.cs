@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class Info : MonoBehaviour
@@ -9,16 +10,16 @@ public class Info : MonoBehaviour
         set => baseBuild = value;
     }
 
-    public Text name;
-    public Text info;
+    [FormerlySerializedAs("name")] public Text buildName;
+    [FormerlySerializedAs("info")] public Text buildInfo;
 
     private BaseBuild baseBuild;
 
     public void SetInfo(BaseBuild baseBuild,string name,string info)
     {
         this.baseBuild = baseBuild;
-        this.name.text = name;
-        this.info.text = info;
+        this.buildName.text = name;
+        this.buildInfo.text = info;
     }
     
     public void Remove()

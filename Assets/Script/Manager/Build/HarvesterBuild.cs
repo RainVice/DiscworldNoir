@@ -48,7 +48,7 @@ public class HarvesterBuild : BaseMaker
 
     public override bool CanPlace()
     {
-        return obstacles.ContainsKey(typeof(AxeBuild)) || obstacles.ContainsKey(typeof(WayBuild));
+        return base.CanPlace() && obstacles.ContainsKey(typeof(AxeBuild)) || obstacles.ContainsKey(typeof(WayBuild));
     }
     
     public override void ShowInfo()

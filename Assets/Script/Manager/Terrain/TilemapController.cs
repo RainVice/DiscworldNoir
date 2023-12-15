@@ -18,6 +18,7 @@ public class TilemapController : MonoBehaviour
     private Grid m_Grid;
     // 地形
     public GameObject[] m_Terrains;
+    public GameObject Terrains;
 
     // ****************** 变量 *****************
     // 鼠标在上一帧的位置
@@ -52,7 +53,7 @@ public class TilemapController : MonoBehaviour
             var instantiate = Instantiate(
                 m_Terrains[i % m_Terrains.Length], 
                 m_Grid.CellToWorld(randomPoint),
-                Quaternion.identity);
+                Quaternion.identity,Terrains.transform);
             instantiate.GetComponent<BaseTerrain>().CurPos = randomPoint;
             GameManager.Instance.AddTerrain(randomPoint,instantiate);
             // 注册邻接表
@@ -62,7 +63,9 @@ public class TilemapController : MonoBehaviour
 
     private void Update()
     {
-
+        OnMouseScrollListener();
+        OnMouseListener();
+        OnMouseDownListener();
         if (!GameManager.Instance.IsStart)
         {
             return;
@@ -78,9 +81,6 @@ public class TilemapController : MonoBehaviour
             return;
         }
         OnMouseToTileListener();
-        OnMouseDownListener();
-        OnMouseListener();
-        OnMouseScrollListener();
     }
     
     
@@ -102,6 +102,10 @@ public class TilemapController : MonoBehaviour
     /// </summary>
     private void OnMouseListener()
     {
+        if (Input.GetMouseButtonDown(0))
+        {
+            m_PreMousePos = m_Camera.ScreenToWorldPoint(Input.mousePosition);
+        }
         if (Input.GetMouseButton(0))
         {
             var mousePos = m_Camera.ScreenToWorldPoint(Input.mousePosition);
@@ -156,6 +160,8 @@ public class TilemapController : MonoBehaviour
                 }
                 return;
             }
+            // 如果是夜晚直接返回
+            if (GameManager.Instance.IsNight) return;
             // 鼠标在UI上直接返回
             if (EventSystem.current.IsPointerOverGameObject()) return;
             // 如果放置的地方有物体则返回

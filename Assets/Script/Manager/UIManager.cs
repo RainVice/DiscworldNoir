@@ -21,6 +21,8 @@ public class UIManager : MonoBehaviour
     public Text timeText;
     // 背景
     public Image bg;
+    // 天数文本
+    public Text dayText;
     
     // *************** 变量 *****************
     private void Awake()
@@ -70,6 +72,11 @@ public class UIManager : MonoBehaviour
     {
         bg.gameObject.SetActive(GameManager.Instance.IsNight);
         timeText.text = time.ToString();
+    }
+
+    public void SetDay(int num)
+    {
+        dayText.text = $"已坚持\n{num}\n天";
     }
     
 }
