@@ -308,8 +308,8 @@ public class GameManager : MonoBehaviour
                         buildType = BuildType.Attack,
                         hp = 100,
                         upgradePrice = 10,
-                        price = 10,
-                        attack = 10,
+                        price = 0,
+                        attack = 15,
                         productionSpeed = 1,
                         waySpeed = 1,
                         description = "只能放置一个，当大本营被摧毁，游戏就结束了"
