@@ -106,7 +106,6 @@ public abstract class BaseBuild : BaseObstacle
         // 接触到敌人扣血
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            Debug.Log(Time.fixedDeltaTime);
             hp -= Time.fixedDeltaTime * 5f;
             slider.gameObject.SetActive(true);
             // 血条显示

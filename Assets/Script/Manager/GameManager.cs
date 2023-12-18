@@ -654,7 +654,7 @@ public class GameManager : MonoBehaviour
         if (m_IsNight)
         {
             m_EnemyTimer += Time.fixedDeltaTime;
-            if (m_EnemyTimer >= Constant.ENEMYCD / (1f + (0.5f * m_Day)))
+            if (m_EnemyTimer >= Constant.ENEMYCD / (1f + (0.05f * m_Day)))
             {
                 m_EnemyTimer = 0;
                 // 生成怪物

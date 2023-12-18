@@ -14,7 +14,7 @@ public class Enemy : MonoBehaviour
     private void Awake()
     {
         m_rg2d = GetComponent<Rigidbody2D>();
-        hp *= 1f + GameManager.Instance.Day;
+        hp *= 1f + (0.01f * GameManager.Instance.Day);
     }
 
     private void FixedUpdate()
@@ -48,6 +48,7 @@ public class Enemy : MonoBehaviour
     {
         hp += num;
         m_slider.gameObject.SetActive(true);
+        Debug.Log($"{num},{hp}");
         m_slider.value = hp / 40f;
         if (hp <= 0)
         {

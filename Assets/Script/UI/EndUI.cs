@@ -15,6 +15,7 @@ public class EndUI : MonoBehaviour
         if (Input.anyKeyDown)
         {
             SceneManager.LoadSceneAsync("Game");
+            Time.timeScale = 1;
         }
     }
 
