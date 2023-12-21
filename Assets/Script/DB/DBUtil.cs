@@ -176,5 +176,11 @@ namespace DB
                 _ => value
             };
         }
+        
+        ~ DBUtil()
+        {
+            m_Connection.Close();
+        }
+
     }
 }

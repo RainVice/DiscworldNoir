@@ -1,0 +1,135 @@
+﻿@startuml
+
+' 类和接口定义
+interface Wapper {
+}
+
+class BaseWapper {
+}
+
+class InsertWapper {
+}
+
+class QueryWapper {
+}
+
+class BaseEffect {
+}
+
+class ColorEffect {
+}
+
+class ScaleEffect {
+}
+
+class TFEffect {
+}
+
+class TFEffects {
+}
+
+class BaseAttack {
+}
+
+class BaseBuild {
+}
+
+class BaseDefense {
+}
+
+class BaseMaker {
+}
+
+class BaseObstacle {
+}
+
+class BaseProduce {
+}
+
+class BaseTerrain {
+}
+
+class BaseWay {
+}
+
+class AxeBuild {
+}
+
+class BulletBuild {
+}
+
+class CionBuild {
+}
+
+class FactoryBuild {
+}
+
+class HarvesterBuild {
+}
+
+class HomeBuild {
+}
+
+class MiningBuild {
+}
+
+class TurretBuild {
+}
+
+class WallBuild {
+}
+
+class WayBuild {
+}
+
+class BuildData {
+}
+
+class StartData {
+}
+
+class CrystalTerrain {
+}
+
+class IronTerrain {
+}
+
+class TreeTerrain {
+}
+
+' 接口实现关系
+BaseWapper ..|> Wapper 
+InsertWapper ..|> Wapper
+QueryWapper ..|> Wapper
+
+' 继承关系
+InsertWapper --|> BaseWapper
+QueryWapper --|> BaseWapper
+ColorEffect --|> BaseEffect
+ScaleEffect --|> BaseEffect
+TFEffect --|> BaseEffect
+TFEffects --|> BaseEffect
+BaseAttack --|> BaseBuild
+BaseBuild --|> BaseObstacle
+BaseDefense --|> BaseBuild
+BaseMaker --|> BaseBuild
+BaseProduce --|> BaseBuild
+BaseTerrain --|> BaseObstacle
+BaseWay --|> BaseBuild
+AxeBuild --|> BaseProduce
+BulletBuild --|> BaseMaker
+CionBuild --|> BaseProduce
+FactoryBuild --|> BaseMaker
+HarvesterBuild --|> BaseMaker
+HomeBuild --|> BaseAttack
+MiningBuild --|> BaseProduce
+TurretBuild --|> BaseAttack
+WallBuild --|> BaseDefense
+WayBuild --|> BaseWay
+BuildData --|> BaseData
+StartData --|> BaseData
+CrystalTerrain --|> BaseTerrain
+IronTerrain --|> BaseTerrain
+TreeTerrain --|> BaseTerrain
+
+@enduml
